@@ -210,7 +210,7 @@ const toolDeclarations = [
 class ResearchAgent {
   constructor() {
     this.model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       tools: toolDeclarations,
       systemInstruction: `
         You are a professional research assistant. Your job is to:

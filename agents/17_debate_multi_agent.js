@@ -6,7 +6,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function llm(system, prompt) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: system });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: system });
   const r = await model.generateContent(prompt);
   return r.response.text();
 }
@@ -99,19 +99,19 @@ async function runDebate({ topic, context, rounds = 2 }) {
 
 // ── Run debates on real decisions ────────────────────────────────────────────
 async function main() {
-  // Business decision debate
-  await runDebate({
-    topic:   "Startups should build with AI agents from day one",
-    context: "Early-stage startup with 3 engineers, $200k seed funding, B2B SaaS product",
-    rounds:  2,
-  });
+  // // Business decision debate
+  // await runDebate({
+  //   topic:   "Startups should build with AI agents from day one",
+  //   context: "Early-stage startup with 3 engineers, $200k seed funding, B2B SaaS product",
+  //   rounds:  2,
+  // });
 
-  console.log("\n\n");
+  // console.log("\n\n");
 
   // Tech choice debate
   await runDebate({
-    topic:   "Use microservices instead of a monolith for a new web app",
-    context: "10-person engineering team, expected 50k users in year 1, tight 6-month deadline",
+    topic:   "Whos is the first man on earth?",
+    context: "No context",
     rounds:  1,
   });
 }

@@ -7,7 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // ── Helper ───────────────────────────────────────────────────────────────────
 async function reviewAgent(role, systemPrompt, code) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: systemPrompt });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: systemPrompt });
   const result = await model.generateContent(`Review this code:\n\n\`\`\`javascript\n${code}\n\`\`\``);
   return result.response.text();
 }
@@ -52,7 +52,7 @@ function suggestImprovements(code) {
 // ── Synthesizer: combines all 3 reviews ──────────────────────────────────────
 async function synthesizeReport(quality, security, improvements, filename) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     systemInstruction: `You are a lead engineer writing a final code review report.
     Combine three review sections into a concise executive summary.
     Add: overall score /10, top 3 priority actions, approve/request-changes verdict.`,

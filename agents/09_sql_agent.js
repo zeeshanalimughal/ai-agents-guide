@@ -176,7 +176,7 @@ const sqlToolDeclarations = [
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function sqlAgent(question) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools: sqlToolDeclarations,
     systemInstruction: `
       You are an expert SQL analyst. When users ask business questions:

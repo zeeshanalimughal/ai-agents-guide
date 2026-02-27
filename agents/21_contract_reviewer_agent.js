@@ -276,7 +276,7 @@ fs.writeFileSync("./contracts/saas-agreement.txt", SAAS_CONTRACT, "utf-8");
 // ─────────────────────────────────────────────────────────────
 async function reviewContract({ filepath, contractType, signingParty }) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools: TOOLS,
     systemInstruction: `
 You are an experienced contract attorney protecting the interests of the person SIGNING the contract.

@@ -340,7 +340,7 @@ fs.writeFileSync("./sample-api/routes.js", SAMPLE_API, "utf-8");
 // ─────────────────────────────────────────────────────────────
 async function runAgent(task) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools: TOOLS,
     systemInstruction: `
 You are an expert API technical writer. Your job is to produce complete, production-grade

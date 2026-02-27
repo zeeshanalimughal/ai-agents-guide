@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // ── Helper: call Gemini without tools ────────────────────────────────────────
 async function llm(system, user) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: system });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: system });
   const r = await model.generateContent(user);
   return r.response.text();
 }

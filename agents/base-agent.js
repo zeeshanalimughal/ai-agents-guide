@@ -18,7 +18,7 @@ class BaseAgent {
    * @param {string} config.systemPrompt - System instruction for the agent
    * @param {Array} config.tools - Array of Gemini function declarations
    * @param {Object} config.toolFns - Map of tool name → async function
-   * @param {string} [config.model] - Gemini model name (default: gemini-1.5-flash)
+   * @param {string} [config.model] - Gemini model name (default: gemini-2.5-flash)
    * @param {number} [config.maxSteps] - Max tool call iterations (default: 20)
    * @param {boolean} [config.verbose] - Log tool calls (default: true)
    */
@@ -27,7 +27,7 @@ class BaseAgent {
     systemPrompt,
     tools = [],
     toolFns = {},
-    model = "gemini-1.5-flash",
+    model = "gemini-2.5-flash",
     maxSteps = 20,
     verbose = true,
   }) {

@@ -157,7 +157,7 @@ const tools = [{ functionDeclarations: allSkills.flatMap((s) => s.declarations) 
 
 async function onboardingAgent(request) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash", tools,
+    model: "gemini-2.5-flash", tools,
     systemInstruction: `You are a friendly customer onboarding specialist for a SaaS product.
       Your goal: make new users successful as fast as possible.
       - Be warm and encouraging

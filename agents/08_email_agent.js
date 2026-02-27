@@ -231,7 +231,7 @@ const emailToolDeclarations = [
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function emailAgent(command) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools: emailToolDeclarations,
     systemInstruction: `
       You are a professional executive email assistant. You help manage a busy inbox.

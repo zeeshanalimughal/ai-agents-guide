@@ -9,7 +9,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function llmCall(systemPrompt, userMessage, label) {
   console.log(`\n  🤖 ${label}...`);
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     systemInstruction: systemPrompt,
   });
   const result = await model.generateContent(userMessage);

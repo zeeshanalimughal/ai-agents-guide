@@ -278,7 +278,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
 <span class="kw">async function</span> <span class="fn">runAgent</span>(userMessage) {
   <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-    <span class="str">model</span>: <span class="str">"gemini-1.5-flash"</span>,
+    <span class="str">model</span>: <span class="str">"gemini-2.5-flash"</span>,
     <span class="str">tools</span>: toolDeclarations,
   });
 
@@ -573,7 +573,7 @@
   ]);
 
   <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-    model: <span class="str">"gemini-1.5-flash"</span>,
+    model: <span class="str">"gemini-2.5-flash"</span>,
     systemInstruction,
     tools: allDeclarations,
   });
@@ -915,7 +915,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 
   <span class="cmt">// Step 4: Create Gemini model with MCP tools</span>
   <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-    model: <span class="str">"gemini-1.5-flash"</span>,
+    model: <span class="str">"gemini-2.5-flash"</span>,
     tools: geminiTools,
     systemInstruction: <span class="str">"You are a helpful assistant that manages todos and files. Use the available tools."</span>,
   });
@@ -1093,7 +1093,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 <span class="kw">class</span> <span class="obj">ResearchAgent</span> {
   <span class="fn">constructor</span>() {
     this.model = genAI.<span class="fn">getGenerativeModel</span>({
-      model: <span class="str">"gemini-1.5-flash"</span>,
+      model: <span class="str">"gemini-2.5-flash"</span>,
       tools: toolDeclarations,
       systemInstruction: <span class="str">`
         You are a research assistant. Your job is to:
@@ -1193,7 +1193,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
 <span class="kw">async function</span> <span class="fn">llmCall</span>(systemPrompt, userMessage) {
   <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-    model: <span class="str">"gemini-1.5-flash"</span>,
+    model: <span class="str">"gemini-2.5-flash"</span>,
     systemInstruction: systemPrompt,
   });
   <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(userMessage);
@@ -1312,7 +1312,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 <span class="kw">const</span> workers = {
   <span class="fn">code_agent</span>: <span class="kw">async</span> (task) => {
     <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-      model: <span class="str">"gemini-1.5-flash"</span>,
+      model: <span class="str">"gemini-2.5-flash"</span>,
       systemInstruction: <span class="str">"You are an expert programmer. Write clean, working code with comments. Always include example usage."</span>,
     });
     <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
@@ -1321,7 +1321,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 
   <span class="fn">analysis_agent</span>: <span class="kw">async</span> (task) => {
     <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-      model: <span class="str">"gemini-1.5-flash"</span>,
+      model: <span class="str">"gemini-2.5-flash"</span>,
       systemInstruction: <span class="str">"You are a data analyst. Analyze information, find patterns, and provide clear insights with numbers."</span>,
     });
     <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
@@ -1330,7 +1330,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 
   <span class="fn">writing_agent</span>: <span class="kw">async</span> (task) => {
     <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-      model: <span class="str">"gemini-1.5-flash"</span>,
+      model: <span class="str">"gemini-2.5-flash"</span>,
       systemInstruction: <span class="str">"You are a professional writer. Write clear, engaging, well-structured content."</span>,
     });
     <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
@@ -1339,7 +1339,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 
   <span class="fn">math_agent</span>: <span class="kw">async</span> (task) => {
     <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-      model: <span class="str">"gemini-1.5-flash"</span>,
+      model: <span class="str">"gemini-2.5-flash"</span>,
       systemInstruction: <span class="str">"You are a mathematician. Solve problems step by step, showing all work clearly."</span>,
     });
     <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
@@ -1355,7 +1355,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
   <span class="fn">constructor</span>() {
     <span class="cmt">// Orchestrator has ONE special tool: call_worker</span>
     this.model = genAI.<span class="fn">getGenerativeModel</span>({
-      model: <span class="str">"gemini-1.5-flash"</span>,
+      model: <span class="str">"gemini-2.5-flash"</span>,
       tools: [{
         functionDeclarations: [{
           name: <span class="str">"call_worker"</span>,
@@ -1546,7 +1546,7 @@ server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceR
 
 <span class="kw">async function</span> <span class="fn">emailAgent</span>(command) {
   <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-    model: <span class="str">"gemini-1.5-flash"</span>,
+    model: <span class="str">"gemini-2.5-flash"</span>,
     tools: emailToolDeclarations,
     systemInstruction: <span class="str">`
       You are a professional email assistant. You can:
@@ -1667,7 +1667,7 @@ db.<span class="fn">exec</span>(<span class="str">`
 
 <span class="kw">async function</span> <span class="fn">sqlAgent</span>(question) {
   <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
-    model: <span class="str">"gemini-1.5-flash"</span>,
+    model: <span class="str">"gemini-2.5-flash"</span>,
     tools: sqlToolDeclarations,
     systemInstruction: <span class="str">`
       You are a SQL expert. When users ask business questions:
@@ -1752,7 +1752,7 @@ db.<span class="fn">exec</span>(<span class="str">`
  *   }
  */</span>
 <span class="kw">class</span> <span class="obj">BaseAgent</span> {
-  <span class="fn">constructor</span>({ name, systemPrompt, tools, toolFns, model = <span class="str">"gemini-1.5-flash"</span>, maxSteps = <span class="num">20</span> }) {
+  <span class="fn">constructor</span>({ name, systemPrompt, tools, toolFns, model = <span class="str">"gemini-2.5-flash"</span>, maxSteps = <span class="num">20</span> }) {
     this.name = name;
     this.toolFns = toolFns;
     this.maxSteps = maxSteps;

@@ -80,7 +80,7 @@ async function main() {
 
   // STEP 5: Create Gemini model with discovered MCP tools
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools: geminiTools,
     systemInstruction: `
       You are a helpful assistant connected to an MCP server with todo management and file system tools.

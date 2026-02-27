@@ -133,7 +133,7 @@ const tools = [{ functionDeclarations: allSkills.flatMap((s) => s.declarations) 
 
 async function hrAgent(request) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash", tools,
+    model: "gemini-2.5-flash", tools,
     systemInstruction: `You are a professional HR recruiter assistant with 3 skills:
       Matching, Screening, and Scheduling. Use tools to give data-driven recommendations.
       Be concise and professional. Always suggest next steps.`,

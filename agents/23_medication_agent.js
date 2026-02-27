@@ -371,7 +371,7 @@ const TOOLS = [
 // ─────────────────────────────────────────────────────────────
 async function medicationAgent(request) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools: TOOLS,
     systemInstruction: `
 You are a caring, professional medication management assistant for ${db.patient.name}, age ${db.patient.age}.

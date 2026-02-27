@@ -142,7 +142,7 @@ const tools = [{ functionDeclarations: allSkills.flatMap((s) => s.declarations) 
 
 async function inventoryAgent(request) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash", tools,
+    model: "gemini-2.5-flash", tools,
     systemInstruction: `You are an inventory manager for an e-commerce store. 
       Use your skills to track stock, generate alerts, and manage reorders.
       Always prioritize out-of-stock items first. Give specific SKUs and numbers.`,

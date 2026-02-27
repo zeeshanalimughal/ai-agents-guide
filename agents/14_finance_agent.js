@@ -161,7 +161,7 @@ const tools = [{ functionDeclarations: allSkills.flatMap((s) => s.declarations) 
 
 async function financeAgent(request) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash", tools,
+    model: "gemini-2.5-flash", tools,
     systemInstruction: `You are a personal finance advisor. You help track spending,
       analyze budgets, and plan savings. Be encouraging but honest about overspending.
       Always give actionable advice with specific dollar amounts.`,

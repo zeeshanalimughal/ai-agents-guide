@@ -10,7 +10,7 @@ const contentCalendar = [];
 
 // ── Helper ───────────────────────────────────────────────────────────────────
 async function llm(system, prompt) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: system });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: system });
   const r = await model.generateContent(prompt);
   return r.response.text();
 }

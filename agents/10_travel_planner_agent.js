@@ -102,7 +102,7 @@ const tools     = [{ functionDeclarations: allSkills.flatMap((s) => s.declaratio
 
 async function travelAgent(request) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     tools,
     systemInstruction: `
       You are an expert travel planner. Use your skills to:
