@@ -1,0 +1,26 @@
+{
+  "name": "ai-agents-complete-guide",
+  "version": "1.0.0",
+  "description": "Complete guide to AI Agents, Skills, MCPs and Multi-Agent Systems with Node.js + Gemini API",
+  "main": "examples/base-agent.js",
+  "scripts": {
+    "01": "node examples/01_calculator_agent.js",
+    "02": "node examples/02_skilled_agent.js",
+    "03": "node examples/03_mcp_server.js",
+    "04": "node examples/04_mcp_client_agent.js",
+    "05": "node examples/05_research_agent.js",
+    "06": "node examples/06_multi_agent_pipeline.js",
+    "07": "node examples/07_orchestrator_pattern.js",
+    "08": "node examples/08_email_agent.js",
+    "09": "node examples/09_sql_agent.js",
+    "base": "node examples/base-agent.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^9.0.0"
+  },
+  "keywords": ["ai", "agents", "gemini", "mcp", "multi-agent", "tools", "skills"],
+  "engines": { "node": ">=18.0.0" },
+  "note": "Setup: npm install → export GEMINI_API_KEY=your_key → npm run 01"
+}

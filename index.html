@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agents, Skills, MCPs & Multi-Agents — Complete Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script>
+  // ===== THEME TOGGLE (in head so it's available before body renders) =====
+  function getPreferredTheme() {
+    var stored = localStorage.getItem('theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var icon = document.getElementById('toggleIcon');
+    var label = document.getElementById('toggleLabel');
+    if (icon && label) {
+      icon.textContent = theme === 'dark' ? '🌙' : '☀️';
+      label.textContent = theme === 'dark' ? 'Dark Mode' : 'Light Mode';
+    }
+  }
+
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    var next = current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  }
+
+  // ===== SIDEBAR TOGGLE (in head so it's available before body renders) =====
+  function toggleSidebar() {
+    if (window.innerWidth <= 900) {
+      document.body.classList.toggle('sidebar-open');
+    } else {
+      document.body.classList.toggle('sidebar-closed');
+    }
+  }
+
+  // Apply theme immediately to prevent flash
+  applyTheme(getPreferredTheme());
+</script>
+</head>
+<body>
+
+<button class="fab-menu" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</button>
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>🤖 AI Agents</h1>
+  </div>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <span class="toggle-icon" id="toggleIcon">🌙</span>
+    <span class="toggle-label" id="toggleLabel">Dark Mode</span>
+  </button>
+  <div class="nav-section">Foundations</div>
+  <a href="#what-is-agent">What is an Agent?</a>
+  <a href="#how-agents-think">How Agents Think</a>
+  <div class="nav-section">Core Concepts</div>
+  <a href="#tools">Tools</a>
+  <a href="#skills">Skills</a>
+  <a href="#mcp">MCP Protocol</a>
+  <div class="nav-section">Building</div>
+  <a href="#build-agent">Build Your First Agent</a>
+  <a href="#teach-skills">Teaching Skills</a>
+  <a href="#build-mcp">Build MCP Server</a>
+  <div class="nav-section">Advanced</div>
+  <a href="#multi-agent">Multi-Agent Systems</a>
+  <a href="#patterns">Patterns & Examples</a>
+  <a href="#real-world">Real-World Projects</a>
+</nav>
+
+<main class="main">
+  <div class="hero">
+    <h1>AI Agents, Skills, MCPs<br>&amp; Multi-Agent Systems</h1>
+    <p>A complete, practical guide with real working Node.js code using the Gemini API. You'll go from zero to building production-ready AI systems.</p>
+    <div class="tag-row">
+      <span class="tag tag-purple">Node.js</span>
+      <span class="tag tag-teal">Gemini API</span>
+      <span class="tag tag-yellow">MCP Protocol</span>
+      <span class="tag tag-red">Multi-Agent</span>
+    </div>
+  </div>
+
+  <!-- ========== SECTION 1: WHAT IS AN AGENT ========== -->
+  <section id="what-is-agent">
+    <h2><span class="icon">🤖</span> What is an AI Agent?</h2>
+
+    <p>An <strong>AI Agent</strong> is an AI program that can <em>think</em>, <em>decide</em>, and <em>act</em> to achieve a goal — not just answer questions. Unlike a regular chatbot that only talks, an agent can use tools, run code, browse the web, send emails, and take real actions in the world.</p>
+
+    <div class="analogy">
+      <strong>Real-Life Analogy:</strong> Think of a regular chatbot as a very smart encyclopedia — it knows a lot and can answer questions. An AI Agent is like hiring a <strong>personal assistant</strong>. You say "book me a flight to Dubai next Friday under $500" and they actually do it — they search flights, compare prices, fill in forms, and confirm the booking. They <em>act</em>, not just <em>answer</em>.
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-icon">💬</div>
+        <h4>Regular Chatbot (No Agent)</h4>
+        <p>You: "What's the weather in Lahore?"<br>Bot: "I cannot access real-time data."<br><br>Stuck. Can't do anything.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚀</div>
+        <h4>AI Agent (With Tools)</h4>
+        <p>You: "What's the weather in Lahore?"<br>Agent: <em>calls weather API tool</em><br>Agent: "It's 28°C and sunny right now!"<br><br>Acts. Gets real data.</p>
+      </div>
+    </div>
+
+    <h3>The 3 Parts of Every Agent</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Brain (LLM)</h4>
+          <p>The AI model (like Gemini, GPT-4, Claude) that reads your request, reasons about it, and decides what to do next.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Tools</h4>
+          <p>Functions the agent can call — like searching Google, running code, reading files, calling APIs, or sending emails.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Memory / Context</h4>
+          <p>The conversation history and any stored information the agent remembers from past steps or past conversations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 2: HOW AGENTS THINK ========== -->
+  <section id="how-agents-think">
+    <h2><span class="icon">🧠</span> How Agents Think — The ReAct Loop</h2>
+
+    <p>Agents use a loop called <strong>ReAct</strong> (Reason + Act). They don't just do one thing — they keep looping: think → act → observe the result → think again → act again... until the task is done.</p>
+
+    <div class="arch">┌─────────────────────────────────────────────────────┐
+│                    ReAct Loop                       │
+│                                                     │
+│   User Request ──► [ LLM THINKS ]                  │
+│                          │                          │
+│              ┌───────────▼──────────────┐           │
+│              │  Do I need a tool?       │           │
+│              │  YES ──► Call Tool       │           │
+│              │  NO  ──► Give Answer     │           │
+│              └───────────┬──────────────┘           │
+│                          │ (tool result)            │
+│                   [ LLM OBSERVES ]                  │
+│                          │                          │
+│               Is goal achieved?                     │
+│               NO  ──► Loop again                   │
+│               YES ──► Final Answer                  │
+└─────────────────────────────────────────────────────┘</div>
+
+    <h3>Real Example: "Book me a restaurant in Lahore tonight"</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><h4>Think</h4><p>Agent reasons: "I need to find restaurants. I'll use the search tool."</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><h4>Act</h4><p>Calls: <code>search_restaurants({city: "Lahore", cuisine: "any", date: "tonight"})</code></p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><h4>Observe</h4><p>Gets back: List of 5 restaurants with availability</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><h4>Think Again</h4><p>"I have options. I need to book one. I'll use the booking tool."</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><h4>Act Again</h4><p>Calls: <code>book_restaurant({id: "xyz", time: "7pm", party: 2})</code></p></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><h4>Done!</h4><p>Returns: "Booked Haveli Restaurant at 7pm for 2 people. Confirmation: #HR2024"</p></div></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 3: TOOLS ========== -->
+  <section id="tools">
+    <h2><span class="icon">🔧</span> Tools — Giving Agents Superpowers</h2>
+
+    <p>A <strong>tool</strong> is just a JavaScript function that the agent can call. You describe what it does, and the AI decides when and how to call it. This is the most fundamental concept in agents.</p>
+
+    <div class="concept">
+      <div class="concept-title">Key Insight</div>
+      You write normal JS functions. You describe them to the AI in a special format (called a "function declaration"). The AI reads the description, decides to call it, and you execute the function. The result goes back to the AI.
+    </div>
+
+    <h3>Example: A Calculator Agent</h3>
+    <p>Let's build a simple agent that can do math by giving it calculator tools.</p>
+
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">01_calculator_agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="cmt">// npm install @google/generative-ai</span>
+<span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 1: Define your actual JavaScript functions (tools)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> tools = {
+  <span class="fn">add</span>: ({ a, b }) => a + b,
+  <span class="fn">subtract</span>: ({ a, b }) => a - b,
+  <span class="fn">multiply</span>: ({ a, b }) => a * b,
+  <span class="fn">divide</span>: ({ a, b }) => {
+    <span class="kw">if</span> (b === <span class="num">0</span>) <span class="kw">return</span> <span class="str">"Error: Cannot divide by zero"</span>;
+    <span class="kw">return</span> a / b;
+  },
+  <span class="fn">power</span>: ({ base, exponent }) => Math.<span class="fn">pow</span>(base, exponent),
+};
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 2: Describe your tools to the AI (function declarations)
+// This is how the AI knows what tools exist and how to use them
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> toolDeclarations = [
+  {
+    <span class="str">functionDeclarations</span>: [
+      {
+        <span class="str">name</span>: <span class="str">"add"</span>,
+        <span class="str">description</span>: <span class="str">"Add two numbers together"</span>,
+        <span class="str">parameters</span>: {
+          <span class="str">type</span>: <span class="str">"OBJECT"</span>,
+          <span class="str">properties</span>: {
+            <span class="str">a</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"First number"</span> },
+            <span class="str">b</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"Second number"</span> },
+          },
+          <span class="str">required</span>: [<span class="str">"a"</span>, <span class="str">"b"</span>],
+        },
+      },
+      {
+        <span class="str">name</span>: <span class="str">"multiply"</span>,
+        <span class="str">description</span>: <span class="str">"Multiply two numbers"</span>,
+        <span class="str">parameters</span>: {
+          <span class="str">type</span>: <span class="str">"OBJECT"</span>,
+          <span class="str">properties</span>: {
+            <span class="str">a</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"First number"</span> },
+            <span class="str">b</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"Second number"</span> },
+          },
+          <span class="str">required</span>: [<span class="str">"a"</span>, <span class="str">"b"</span>],
+        },
+      },
+      {
+        <span class="str">name</span>: <span class="str">"divide"</span>,
+        <span class="str">description</span>: <span class="str">"Divide number a by number b"</span>,
+        <span class="str">parameters</span>: {
+          <span class="str">type</span>: <span class="str">"OBJECT"</span>,
+          <span class="str">properties</span>: {
+            <span class="str">a</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"Dividend"</span> },
+            <span class="str">b</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"Divisor"</span> },
+          },
+          <span class="str">required</span>: [<span class="str">"a"</span>, <span class="str">"b"</span>],
+        },
+      },
+      {
+        <span class="str">name</span>: <span class="str">"power"</span>,
+        <span class="str">description</span>: <span class="str">"Raise base to the power of exponent"</span>,
+        <span class="str">parameters</span>: {
+          <span class="str">type</span>: <span class="str">"OBJECT"</span>,
+          <span class="str">properties</span>: {
+            <span class="str">base</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"The base number"</span> },
+            <span class="str">exponent</span>: { <span class="str">type</span>: <span class="str">"NUMBER"</span>, <span class="str">description</span>: <span class="str">"The exponent"</span> },
+          },
+          <span class="str">required</span>: [<span class="str">"base"</span>, <span class="str">"exponent"</span>],
+        },
+      },
+    ],
+  },
+];
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 3: The Agent Loop
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">runAgent</span>(userMessage) {
+  <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+    <span class="str">model</span>: <span class="str">"gemini-1.5-flash"</span>,
+    <span class="str">tools</span>: toolDeclarations,
+  });
+
+  <span class="kw">const</span> chat = model.<span class="fn">startChat</span>();
+  console.<span class="fn">log</span>(<span class="str">`\n👤 User: ${userMessage}`</span>);
+
+  <span class="kw">let</span> response = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(userMessage);
+
+  <span class="cmt">// The Agent Loop — keeps running until no more tool calls</span>
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> candidate = response.response.candidates[<span class="num">0</span>];
+    <span class="kw">const</span> parts = candidate.content.parts;
+    <span class="kw">const</span> functionCalls = parts.<span class="fn">filter</span>(p => p.functionCall);
+
+    <span class="cmt">// If no function calls, we're done — return the text answer</span>
+    <span class="kw">if</span> (functionCalls.length === <span class="num">0</span>) {
+      <span class="kw">const</span> text = parts.<span class="fn">map</span>(p => p.text || <span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>);
+      console.<span class="fn">log</span>(<span class="str">`\n🤖 Agent: ${text}`</span>);
+      <span class="kw">return</span> text;
+    }
+
+    <span class="cmt">// Execute each tool call and collect results</span>
+    <span class="kw">const</span> toolResults = [];
+    <span class="kw">for</span> (<span class="kw">const</span> part <span class="kw">of</span> functionCalls) {
+      <span class="kw">const</span> { name, args } = part.functionCall;
+      console.<span class="fn">log</span>(<span class="str">`  🔧 Calling tool: ${name}(${JSON.stringify(args)})`</span>);
+
+      <span class="kw">const</span> toolFn = tools[name];
+      <span class="kw">if</span> (!toolFn) <span class="kw">throw</span> <span class="kw">new</span> <span class="obj">Error</span>(<span class="str">`Unknown tool: ${name}`</span>);
+
+      <span class="kw">const</span> result = toolFn(args);
+      console.<span class="fn">log</span>(<span class="str">`  ✅ Result: ${result}`</span>);
+
+      toolResults.<span class="fn">push</span>({
+        <span class="str">functionResponse</span>: {
+          <span class="str">name</span>: name,
+          <span class="str">response</span>: { result },
+        },
+      });
+    }
+
+    <span class="cmt">// Send results back to the AI so it can continue thinking</span>
+    response = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(toolResults);
+  }
+}
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Test it!
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">await</span> <span class="fn">runAgent</span>(<span class="str">"What is (5 + 3) * 4, and then divide that by 2^3?"</span>);
+  <span class="cmt">// Agent will call: add(5,3)=8, multiply(8,4)=32, power(2,3)=8, divide(32,8)=4</span>
+}
+<span class="fn">main</span>();</code></pre>
+
+    <h3>What Just Happened?</h3>
+    <p>The AI saw your complex math question, broke it into steps, called 4 different tools in sequence, and combined the results. You wrote normal JS functions — the AI figured out when and how to call them.</p>
+  </section>
+
+  <!-- ========== SECTION 4: SKILLS ========== -->
+  <section id="skills">
+    <h2 id="teach-skills"><span class="icon">🎓</span> Skills — Teaching Agents What They Know</h2>
+
+    <p>A <strong>skill</strong> is a group of related tools + the knowledge/instructions about how to use them. Think of it as a "specialization" you give to an agent. An agent can have many skills.</p>
+
+    <div class="analogy">
+      <strong>Real-Life Analogy:</strong> Imagine hiring a new employee. They're smart (the LLM). You then train them: "Here's how we handle customer complaints" + give them access to the CRM system, email, and refund tools. That training + tools = a <strong>Skill</strong>. You can teach them multiple skills: customer service, billing, technical support.
+    </div>
+
+    <h3>A Skill Has 3 Parts</h3>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h4>System Prompt / Instructions</h4>
+        <p>The "training manual" — text that tells the agent <em>how</em> to behave, what it knows, what tone to use, rules to follow.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <h4>Tools</h4>
+        <p>The functions the agent can call to actually do things — like reading a database, calling an API, sending a message.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h4>Knowledge</h4>
+        <p>Context about the domain — FAQs, product details, policies — often passed in the system prompt or as retrieved documents.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h4>Scope</h4>
+        <p>What the agent should and shouldn't do — "Only handle billing questions, escalate everything else."</p>
+      </div>
+    </div>
+
+    <h3>Example: Building a Customer Support Agent with Skills</h3>
+    <p>Let's build a real customer support agent with multiple skills: <strong>order tracking</strong>, <strong>refund processing</strong>, and <strong>product info</strong>.</p>
+
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">02_skilled_agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FAKE DATABASE (in production, this hits a real DB)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> db = {
+  orders: {
+    <span class="str">"ORD-001"</span>: { status: <span class="str">"shipped"</span>, item: <span class="str">"iPhone Case"</span>, eta: <span class="str">"Feb 28"</span>, price: <span class="num">25</span> },
+    <span class="str">"ORD-002"</span>: { status: <span class="str">"processing"</span>, item: <span class="str">"Laptop Stand"</span>, eta: <span class="str">"Mar 2"</span>, price: <span class="num">45</span> },
+    <span class="str">"ORD-003"</span>: { status: <span class="str">"delivered"</span>, item: <span class="str">"USB Hub"</span>, eta: <span class="str">"delivered"</span>, price: <span class="num">35</span> },
+  },
+  products: {
+    <span class="str">"iphone-case"</span>: { name: <span class="str">"iPhone Case"</span>, price: <span class="num">25</span>, stock: <span class="num">150</span>, description: <span class="str">"Premium leather case"</span> },
+    <span class="str">"laptop-stand"</span>: { name: <span class="str">"Laptop Stand"</span>, price: <span class="num">45</span>, stock: <span class="num">30</span>, description: <span class="str">"Adjustable aluminum stand"</span> },
+  },
+  refunds: [],
+};
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SKILL 1: Order Tracking
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> orderTrackingSkill = {
+  name: <span class="str">"Order Tracking"</span>,
+  instructions: <span class="str">`
+    You are an order tracking specialist. When customers ask about their orders,
+    use the track_order tool to get real-time status. Be empathetic and clear.
+    If an order is delayed, apologize and offer to help.
+    Always end with asking if there's anything else you can help with.
+  `</span>,
+  tools: {
+    <span class="fn">track_order</span>: ({ order_id }) => {
+      <span class="kw">const</span> order = db.orders[order_id];
+      <span class="kw">if</span> (!order) <span class="kw">return</span> { error: <span class="str">`Order ${order_id} not found`</span> };
+      <span class="kw">return</span> order;
+    },
+    <span class="fn">list_customer_orders</span>: ({ customer_email }) => {
+      <span class="cmt">// In real app, query by email</span>
+      <span class="kw">return</span> Object.entries(db.orders).<span class="fn">map</span>(([id, o]) => ({ id, ...o }));
+    },
+  },
+  toolDeclarations: [
+    {
+      name: <span class="str">"track_order"</span>,
+      description: <span class="str">"Get the current status of an order by its ID"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          order_id: { type: <span class="str">"STRING"</span>, description: <span class="str">"The order ID like ORD-001"</span> },
+        },
+        required: [<span class="str">"order_id"</span>],
+      },
+    },
+    {
+      name: <span class="str">"list_customer_orders"</span>,
+      description: <span class="str">"List all orders for a customer by their email"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          customer_email: { type: <span class="str">"STRING"</span>, description: <span class="str">"Customer email address"</span> },
+        },
+        required: [<span class="str">"customer_email"</span>],
+      },
+    },
+  ],
+};
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SKILL 2: Refund Processing
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> refundSkill = {
+  name: <span class="str">"Refund Processing"</span>,
+  instructions: <span class="str">`
+    You handle refund requests. Rules:
+    - Only refund delivered orders
+    - Maximum refund is the original price
+    - Always verify the order exists before refunding
+    - Be professional and apologetic for any inconvenience
+    - Refunds take 3-5 business days
+  `</span>,
+  tools: {
+    <span class="fn">process_refund</span>: ({ order_id, reason }) => {
+      <span class="kw">const</span> order = db.orders[order_id];
+      <span class="kw">if</span> (!order) <span class="kw">return</span> { success: <span class="kw">false</span>, error: <span class="str">"Order not found"</span> };
+      <span class="kw">if</span> (order.status !== <span class="str">"delivered"</span>) {
+        <span class="kw">return</span> { success: <span class="kw">false</span>, error: <span class="str">"Can only refund delivered orders"</span> };
+      }
+      <span class="kw">const</span> refundId = <span class="str">`REF-${Date.now()}`</span>;
+      db.refunds.<span class="fn">push</span>({ refundId, order_id, reason, amount: order.price, date: <span class="kw">new</span> <span class="obj">Date</span>() });
+      <span class="kw">return</span> { success: <span class="kw">true</span>, refundId, amount: order.price, eta: <span class="str">"3-5 business days"</span> };
+    },
+  },
+  toolDeclarations: [
+    {
+      name: <span class="str">"process_refund"</span>,
+      description: <span class="str">"Process a refund for a delivered order"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          order_id: { type: <span class="str">"STRING"</span>, description: <span class="str">"The order ID to refund"</span> },
+          reason: { type: <span class="str">"STRING"</span>, description: <span class="str">"Reason for refund"</span> },
+        },
+        required: [<span class="str">"order_id"</span>, <span class="str">"reason"</span>],
+      },
+    },
+  ],
+};
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SKILL 3: Product Info
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> productSkill = {
+  name: <span class="str">"Product Information"</span>,
+  instructions: <span class="str">`
+    You are a product expert. Help customers find the right product.
+    Always mention price and stock availability.
+    Suggest related products when relevant.
+    Be enthusiastic about the products but honest.
+  `</span>,
+  tools: {
+    <span class="fn">get_product</span>: ({ product_id }) => {
+      <span class="kw">return</span> db.products[product_id] || { error: <span class="str">"Product not found"</span> };
+    },
+    <span class="fn">search_products</span>: ({ query }) => {
+      <span class="kw">return</span> Object.entries(db.products)
+        .<span class="fn">filter</span>(([id, p]) => p.name.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(query.<span class="fn">toLowerCase</span>()))
+        .<span class="fn">map</span>(([id, p]) => ({ id, ...p }));
+    },
+  },
+  toolDeclarations: [
+    {
+      name: <span class="str">"get_product"</span>,
+      description: <span class="str">"Get details about a specific product"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          product_id: { type: <span class="str">"STRING"</span>, description: <span class="str">"Product ID like iphone-case"</span> },
+        },
+        required: [<span class="str">"product_id"</span>],
+      },
+    },
+    {
+      name: <span class="str">"search_products"</span>,
+      description: <span class="str">"Search products by keyword"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          query: { type: <span class="str">"STRING"</span>, description: <span class="str">"Search query"</span> },
+        },
+        required: [<span class="str">"query"</span>],
+      },
+    },
+  ],
+};
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AGENT FACTORY: Combine skills into one agent
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">function</span> <span class="fn">createAgent</span>(skills) {
+  <span class="cmt">// Merge all skills' instructions</span>
+  <span class="kw">const</span> systemInstruction = <span class="str">`
+    You are a helpful customer support agent for TechStore.
+    You have the following capabilities:
+    ${skills.<span class="fn">map</span>(s => `- ${s.name}: ${s.instructions}`).<span class="fn">join</span>('\n')}
+    
+    Always be polite, empathetic, and efficient.
+    If a customer's issue is outside your capabilities, say so honestly.
+  `</span>;
+
+  <span class="cmt">// Merge all skills' tool functions</span>
+  <span class="kw">const</span> allToolFns = skills.<span class="fn">reduce</span>((acc, skill) => ({
+    ...acc,
+    ...skill.tools,
+  }), {});
+
+  <span class="cmt">// Merge all tool declarations</span>
+  <span class="kw">const</span> allDeclarations = [{
+    functionDeclarations: skills.<span class="fn">flatMap</span>(s => s.toolDeclarations),
+  }];
+
+  <span class="kw">return</span> { systemInstruction, allToolFns, allDeclarations };
+}
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Run the skilled agent
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">runSkilledAgent</span>(userMessage) {
+  <span class="kw">const</span> { systemInstruction, allToolFns, allDeclarations } = <span class="fn">createAgent</span>([
+    orderTrackingSkill,
+    refundSkill,
+    productSkill,
+  ]);
+
+  <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+    model: <span class="str">"gemini-1.5-flash"</span>,
+    systemInstruction,
+    tools: allDeclarations,
+  });
+
+  <span class="kw">const</span> chat = model.<span class="fn">startChat</span>();
+  console.<span class="fn">log</span>(<span class="str">`\n👤 Customer: ${userMessage}`</span>);
+
+  <span class="kw">let</span> response = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(userMessage);
+
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> parts = response.response.candidates[<span class="num">0</span>].content.parts;
+    <span class="kw">const</span> functionCalls = parts.<span class="fn">filter</span>(p => p.functionCall);
+
+    <span class="kw">if</span> (functionCalls.length === <span class="num">0</span>) {
+      console.<span class="fn">log</span>(<span class="str">`\n🤖 Support Agent: ${parts.<span class="fn">map</span>(p => p.text || <span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>)}`</span>);
+      <span class="kw">return</span>;
+    }
+
+    <span class="kw">const</span> toolResults = [];
+    <span class="kw">for</span> (<span class="kw">const</span> part <span class="kw">of</span> functionCalls) {
+      <span class="kw">const</span> { name, args } = part.functionCall;
+      console.<span class="fn">log</span>(<span class="str">`  🔧 Using skill: ${name}(${JSON.stringify(args)})`</span>);
+      <span class="kw">const</span> result = allToolFns[name](args);
+      toolResults.<span class="fn">push</span>({ functionResponse: { name, response: result } });
+    }
+
+    response = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(toolResults);
+  }
+}
+
+<span class="cmt">// Test all 3 skills!</span>
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">await</span> <span class="fn">runSkilledAgent</span>(<span class="str">"Where is my order ORD-001?"</span>);
+  <span class="kw">await</span> <span class="fn">runSkilledAgent</span>(<span class="str">"I want a refund for ORD-003, it was broken"</span>);
+  <span class="kw">await</span> <span class="fn">runSkilledAgent</span>(<span class="str">"Do you have any laptop accessories?"</span>);
+}
+<span class="fn">main</span>();</code></pre>
+  </section>
+
+  <!-- ========== SECTION 5: MCP ========== -->
+  <section id="mcp">
+    <h2><span class="icon">🔌</span> MCP — Model Context Protocol</h2>
+
+    <p><strong>MCP (Model Context Protocol)</strong> is a standard way for AI agents to connect to external tools and data sources. Think of it as <strong>USB for AI</strong> — just like USB lets any device connect to any computer, MCP lets any AI agent connect to any tool server.</p>
+
+    <div class="analogy">
+      <strong>Real-Life Analogy:</strong> Before USB, every device had a different connector. You needed a special cable for your mouse, another for your keyboard, another for your printer. USB standardized it. MCP does the same for AI tools — instead of every AI app writing custom integrations, there's one standard way to expose tools, and any AI can use them.
+    </div>
+
+    <h3>MCP Architecture</h3>
+    <div class="arch">┌──────────────────────────────────────────────────────────┐
+│                    MCP Architecture                       │
+│                                                          │
+│   ┌─────────────┐         ┌─────────────────────────┐   │
+│   │  AI Client  │◄──────►│   MCP Server             │   │
+│   │  (Claude,   │  JSON  │  (Your custom server)    │   │
+│   │   Cursor,   │  RPC   │                          │   │
+│   │   Your App) │        │  Tools:                  │   │
+│   └─────────────┘        │  - read_file()           │   │
+│                          │  - query_database()      │   │
+│   ┌─────────────┐        │  - send_email()          │   │
+│   │  MCP Server │        │  - search_web()          │   │
+│   │  (GitHub)   │        │                          │   │
+│   └─────────────┘        │  Resources:              │   │
+│                          │  - /docs/api.md          │   │
+│   ┌─────────────┐        │  - /data/users.csv       │   │
+│   │  MCP Server │        └─────────────────────────┘   │
+│   │  (Postgres) │                                       │
+│   └─────────────┘                                       │
+└──────────────────────────────────────────────────────────┘</div>
+
+    <h3>MCP Has 3 Things It Can Expose</h3>
+    <table>
+      <thead><tr><th>Type</th><th>What It Is</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tools</strong></td><td>Functions the AI can call</td><td>send_email(), query_db()</td></tr>
+        <tr><td><strong>Resources</strong></td><td>Data/files the AI can read</td><td>company_docs.md, user_data.json</td></tr>
+        <tr><td><strong>Prompts</strong></td><td>Pre-built prompt templates</td><td>"Summarize this document as..."</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="build-mcp">Build Your Own MCP Server from Scratch</h3>
+    <p>Let's build an MCP server that exposes a file system and a "todo" database to any AI that connects to it.</p>
+
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">03_mcp_server.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="cmt">// npm install @modelcontextprotocol/sdk</span>
+<span class="kw">const</span> { <span class="obj">Server</span> } = <span class="fn">require</span>(<span class="str">"@modelcontextprotocol/sdk/server/index.js"</span>);
+<span class="kw">const</span> { <span class="obj">StdioServerTransport</span> } = <span class="fn">require</span>(<span class="str">"@modelcontextprotocol/sdk/server/stdio.js"</span>);
+<span class="kw">const</span> {
+  <span class="obj">CallToolRequestSchema</span>,
+  <span class="obj">ListToolsRequestSchema</span>,
+  <span class="obj">ListResourcesRequestSchema</span>,
+  <span class="obj">ReadResourceRequestSchema</span>,
+} = <span class="fn">require</span>(<span class="str">"@modelcontextprotocol/sdk/types.js"</span>);
+<span class="kw">const</span> fs = <span class="fn">require</span>(<span class="str">"fs"</span>);
+<span class="kw">const</span> path = <span class="fn">require</span>(<span class="str">"path"</span>);
+
+<span class="cmt">// In-memory Todo Database</span>
+<span class="kw">let</span> todos = [
+  { id: <span class="num">1</span>, text: <span class="str">"Buy groceries"</span>, done: <span class="kw">false</span>, priority: <span class="str">"high"</span> },
+  { id: <span class="num">2</span>, text: <span class="str">"Write project report"</span>, done: <span class="kw">false</span>, priority: <span class="str">"medium"</span> },
+  { id: <span class="num">3</span>, text: <span class="str">"Call dentist"</span>, done: <span class="kw">true</span>, priority: <span class="str">"low"</span> },
+];
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Create the MCP Server
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> server = <span class="kw">new</span> <span class="obj">Server</span>(
+  { name: <span class="str">"todo-server"</span>, version: <span class="str">"1.0.0"</span> },
+  { capabilities: { tools: {}, resources: {} } }
+);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LIST TOOLS: Tell any connected AI what tools are available
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+server.<span class="fn">setRequestHandler</span>(<span class="obj">ListToolsRequestSchema</span>, <span class="kw">async</span> () => ({
+  tools: [
+    {
+      name: <span class="str">"add_todo"</span>,
+      description: <span class="str">"Add a new todo item to the list"</span>,
+      inputSchema: {
+        type: <span class="str">"object"</span>,
+        properties: {
+          text: { type: <span class="str">"string"</span>, description: <span class="str">"The todo task text"</span> },
+          priority: {
+            type: <span class="str">"string"</span>,
+            enum: [<span class="str">"low"</span>, <span class="str">"medium"</span>, <span class="str">"high"</span>],
+            description: <span class="str">"Priority level"</span>,
+          },
+        },
+        required: [<span class="str">"text"</span>],
+      },
+    },
+    {
+      name: <span class="str">"list_todos"</span>,
+      description: <span class="str">"List all todos, optionally filtered by status or priority"</span>,
+      inputSchema: {
+        type: <span class="str">"object"</span>,
+        properties: {
+          filter: {
+            type: <span class="str">"string"</span>,
+            enum: [<span class="str">"all"</span>, <span class="str">"done"</span>, <span class="str">"pending"</span>],
+            description: <span class="str">"Filter by completion status"</span>,
+          },
+        },
+      },
+    },
+    {
+      name: <span class="str">"complete_todo"</span>,
+      description: <span class="str">"Mark a todo as completed"</span>,
+      inputSchema: {
+        type: <span class="str">"object"</span>,
+        properties: {
+          id: { type: <span class="str">"number"</span>, description: <span class="str">"The todo ID to complete"</span> },
+        },
+        required: [<span class="str">"id"</span>],
+      },
+    },
+    {
+      name: <span class="str">"delete_todo"</span>,
+      description: <span class="str">"Delete a todo item"</span>,
+      inputSchema: {
+        type: <span class="str">"object"</span>,
+        properties: {
+          id: { type: <span class="str">"number"</span>, description: <span class="str">"The todo ID to delete"</span> },
+        },
+        required: [<span class="str">"id"</span>],
+      },
+    },
+    {
+      name: <span class="str">"read_file"</span>,
+      description: <span class="str">"Read the contents of a file"</span>,
+      inputSchema: {
+        type: <span class="str">"object"</span>,
+        properties: {
+          filepath: { type: <span class="str">"string"</span>, description: <span class="str">"Path to the file"</span> },
+        },
+        required: [<span class="str">"filepath"</span>],
+      },
+    },
+    {
+      name: <span class="str">"write_file"</span>,
+      description: <span class="str">"Write content to a file"</span>,
+      inputSchema: {
+        type: <span class="str">"object"</span>,
+        properties: {
+          filepath: { type: <span class="str">"string"</span>, description: <span class="str">"Path to write the file"</span> },
+          content: { type: <span class="str">"string"</span>, description: <span class="str">"Content to write"</span> },
+        },
+        required: [<span class="str">"filepath"</span>, <span class="str">"content"</span>],
+      },
+    },
+  ],
+}));
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CALL TOOL: Handle when AI calls a tool
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+server.<span class="fn">setRequestHandler</span>(<span class="obj">CallToolRequestSchema</span>, <span class="kw">async</span> (request) => {
+  <span class="kw">const</span> { name, arguments: args } = request.params;
+
+  <span class="kw">switch</span> (name) {
+    <span class="kw">case</span> <span class="str">"add_todo"</span>: {
+      <span class="kw">const</span> newTodo = {
+        id: todos.length + <span class="num">1</span>,
+        text: args.text,
+        done: <span class="kw">false</span>,
+        priority: args.priority || <span class="str">"medium"</span>,
+      };
+      todos.<span class="fn">push</span>(newTodo);
+      <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Added todo: ${JSON.stringify(newTodo)}`</span> }] };
+    }
+
+    <span class="kw">case</span> <span class="str">"list_todos"</span>: {
+      <span class="kw">let</span> filtered = todos;
+      <span class="kw">if</span> (args.filter === <span class="str">"done"</span>) filtered = todos.<span class="fn">filter</span>(t => t.done);
+      <span class="kw">if</span> (args.filter === <span class="str">"pending"</span>) filtered = todos.<span class="fn">filter</span>(t => !t.done);
+      <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="obj">JSON</span>.<span class="fn">stringify</span>(filtered, <span class="kw">null</span>, <span class="num">2</span>) }] };
+    }
+
+    <span class="kw">case</span> <span class="str">"complete_todo"</span>: {
+      <span class="kw">const</span> todo = todos.<span class="fn">find</span>(t => t.id === args.id);
+      <span class="kw">if</span> (!todo) <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Todo ${args.id} not found`</span> }] };
+      todo.done = <span class="kw">true</span>;
+      <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Completed: "${todo.text}"`</span> }] };
+    }
+
+    <span class="kw">case</span> <span class="str">"delete_todo"</span>: {
+      <span class="kw">const</span> idx = todos.<span class="fn">findIndex</span>(t => t.id === args.id);
+      <span class="kw">if</span> (idx === -<span class="num">1</span>) <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Todo ${args.id} not found`</span> }] };
+      <span class="kw">const</span> [removed] = todos.<span class="fn">splice</span>(idx, <span class="num">1</span>);
+      <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Deleted: "${removed.text}"`</span> }] };
+    }
+
+    <span class="kw">case</span> <span class="str">"read_file"</span>: {
+      <span class="kw">try</span> {
+        <span class="kw">const</span> content = fs.<span class="fn">readFileSync</span>(args.filepath, <span class="str">"utf-8"</span>);
+        <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: content }] };
+      } <span class="kw">catch</span> (e) {
+        <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Error: ${e.message}`</span> }], isError: <span class="kw">true</span> };
+      }
+    }
+
+    <span class="kw">case</span> <span class="str">"write_file"</span>: {
+      <span class="kw">try</span> {
+        fs.<span class="fn">writeFileSync</span>(args.filepath, args.content, <span class="str">"utf-8"</span>);
+        <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Written to ${args.filepath}`</span> }] };
+      } <span class="kw">catch</span> (e) {
+        <span class="kw">return</span> { content: [{ type: <span class="str">"text"</span>, text: <span class="str">`Error: ${e.message}`</span> }], isError: <span class="kw">true</span> };
+      }
+    }
+
+    <span class="kw">default</span>:
+      <span class="kw">throw</span> <span class="kw">new</span> <span class="obj">Error</span>(<span class="str">`Unknown tool: ${name}`</span>);
+  }
+});
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LIST RESOURCES: Expose data files as readable resources
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+server.<span class="fn">setRequestHandler</span>(<span class="obj">ListResourcesRequestSchema</span>, <span class="kw">async</span> () => ({
+  resources: [
+    {
+      uri: <span class="str">"todo://database"</span>,
+      name: <span class="str">"Current Todos"</span>,
+      description: <span class="str">"The complete list of todos in JSON format"</span>,
+      mimeType: <span class="str">"application/json"</span>,
+    },
+    {
+      uri: <span class="str">"file://docs/readme.md"</span>,
+      name: <span class="str">"App Documentation"</span>,
+      description: <span class="str">"README file for this application"</span>,
+      mimeType: <span class="str">"text/markdown"</span>,
+    },
+  ],
+}));
+
+server.<span class="fn">setRequestHandler</span>(<span class="obj">ReadResourceRequestSchema</span>, <span class="kw">async</span> (request) => {
+  <span class="kw">const</span> { uri } = request.params;
+
+  <span class="kw">if</span> (uri === <span class="str">"todo://database"</span>) {
+    <span class="kw">return</span> {
+      contents: [{
+        uri,
+        mimeType: <span class="str">"application/json"</span>,
+        text: <span class="obj">JSON</span>.<span class="fn">stringify</span>(todos, <span class="kw">null</span>, <span class="num">2</span>),
+      }],
+    };
+  }
+
+  <span class="kw">throw</span> <span class="kw">new</span> <span class="obj">Error</span>(<span class="str">`Resource not found: ${uri}`</span>);
+});
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Start the server (communicates via stdin/stdout)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">const</span> transport = <span class="kw">new</span> <span class="obj">StdioServerTransport</span>();
+  <span class="kw">await</span> server.<span class="fn">connect</span>(transport);
+  console.<span class="fn">error</span>(<span class="str">"Todo MCP Server running on stdio"</span>);
+}
+<span class="fn">main</span>();</code></pre>
+
+    <h3>MCP Client — Connect Your Agent to the MCP Server</h3>
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">04_mcp_client_agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">Client</span> } = <span class="fn">require</span>(<span class="str">"@modelcontextprotocol/sdk/client/index.js"</span>);
+<span class="kw">const</span> { <span class="obj">StdioClientTransport</span> } = <span class="fn">require</span>(<span class="str">"@modelcontextprotocol/sdk/client/stdio.js"</span>);
+<span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="cmt">// Step 1: Connect to the MCP server</span>
+  <span class="kw">const</span> mcpClient = <span class="kw">new</span> <span class="obj">Client</span>({ name: <span class="str">"gemini-agent"</span>, version: <span class="str">"1.0.0"</span> }, {});
+  <span class="kw">const</span> transport = <span class="kw">new</span> <span class="obj">StdioClientTransport</span>({
+    command: <span class="str">"node"</span>,
+    args: [<span class="str">"./03_mcp_server.js"</span>],
+  });
+  <span class="kw">await</span> mcpClient.<span class="fn">connect</span>(transport);
+
+  <span class="cmt">// Step 2: Discover available tools from the MCP server</span>
+  <span class="kw">const</span> { tools: mcpTools } = <span class="kw">await</span> mcpClient.<span class="fn">listTools</span>();
+  console.<span class="fn">log</span>(<span class="str">"Available MCP tools:"</span>, mcpTools.<span class="fn">map</span>(t => t.name));
+
+  <span class="cmt">// Step 3: Convert MCP tool format to Gemini format</span>
+  <span class="kw">const</span> geminiTools = [{
+    functionDeclarations: mcpTools.<span class="fn">map</span>(tool => ({
+      name: tool.name,
+      description: tool.description,
+      parameters: tool.inputSchema,
+    })),
+  }];
+
+  <span class="cmt">// Step 4: Create Gemini model with MCP tools</span>
+  <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+    model: <span class="str">"gemini-1.5-flash"</span>,
+    tools: geminiTools,
+    systemInstruction: <span class="str">"You are a helpful assistant that manages todos and files. Use the available tools."</span>,
+  });
+
+  <span class="cmt">// Step 5: Run agent loop, dispatching tool calls to MCP server</span>
+  <span class="kw">async function</span> <span class="fn">chat</span>(message) {
+    console.<span class="fn">log</span>(<span class="str">`\n👤 User: ${message}`</span>);
+    <span class="kw">const</span> chatSession = model.<span class="fn">startChat</span>();
+    <span class="kw">let</span> response = <span class="kw">await</span> chatSession.<span class="fn">sendMessage</span>(message);
+
+    <span class="kw">while</span> (<span class="kw">true</span>) {
+      <span class="kw">const</span> parts = response.response.candidates[<span class="num">0</span>].content.parts;
+      <span class="kw">const</span> calls = parts.<span class="fn">filter</span>(p => p.functionCall);
+
+      <span class="kw">if</span> (!calls.length) {
+        console.<span class="fn">log</span>(<span class="str">`🤖 Agent: ${parts.<span class="fn">map</span>(p => p.text || <span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>)}`</span>);
+        <span class="kw">return</span>;
+      }
+
+      <span class="kw">const</span> results = [];
+      <span class="kw">for</span> (<span class="kw">const</span> p <span class="kw">of</span> calls) {
+        <span class="kw">const</span> { name, args } = p.functionCall;
+        console.<span class="fn">log</span>(<span class="str">`  📡 MCP call: ${name}(${JSON.stringify(args)})`</span>);
+
+        <span class="cmt">// Execute tool ON THE MCP SERVER (not locally!)</span>
+        <span class="kw">const</span> mcpResult = <span class="kw">await</span> mcpClient.<span class="fn">callTool</span>({ name, arguments: args });
+        <span class="kw">const</span> resultText = mcpResult.content[<span class="num">0</span>].text;
+        console.<span class="fn">log</span>(<span class="str">`  ✅ MCP result: ${resultText}`</span>);
+
+        results.<span class="fn">push</span>({ functionResponse: { name, response: { result: resultText } } });
+      }
+
+      response = <span class="kw">await</span> chatSession.<span class="fn">sendMessage</span>(results);
+    }
+  }
+
+  <span class="kw">await</span> <span class="fn">chat</span>(<span class="str">"Show me all my pending todos"</span>);
+  <span class="kw">await</span> <span class="fn">chat</span>(<span class="str">"Add a high priority todo: Deploy the new website"</span>);
+  <span class="kw">await</span> <span class="fn">chat</span>(<span class="str">"Mark todo #1 as done and then show all todos"</span>);
+
+  <span class="kw">await</span> mcpClient.<span class="fn">close</span>();
+}
+<span class="fn">main</span>();</code></pre>
+
+    <div class="concept teal">
+      <div class="concept-title">Why MCP Matters</div>
+      Once you build an MCP server, <strong>any</strong> MCP-compatible AI client can use it — Claude Desktop, Cursor, Continue.dev, or your own app. You write the server once, and it works everywhere. This is the power of standardization.
+    </div>
+  </section>
+
+  <!-- ========== SECTION 6: BUILD YOUR FIRST AGENT ========== -->
+  <section id="build-agent">
+    <h2><span class="icon">⚙️</span> Build Your First Full Agent</h2>
+
+    <p>Let's build a real, complete agent — a <strong>Research Assistant</strong> that can search the web (simulated), read URLs, summarize content, and save notes to files. This is a production-quality pattern.</p>
+
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">05_research_agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> fs = <span class="fn">require</span>(<span class="str">"fs"</span>);
+<span class="kw">const</span> https = <span class="fn">require</span>(<span class="str">"https"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TOOLS for the Research Agent
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span class="cmt">// Tool 1: Web search (using DuckDuckGo instant answers API)</span>
+<span class="kw">async function</span> <span class="fn">web_search</span>({ query }) {
+  <span class="kw">return</span> <span class="kw">new</span> <span class="obj">Promise</span>((resolve) => {
+    <span class="kw">const</span> url = <span class="str">`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1`</span>;
+    https.<span class="fn">get</span>(url, (res) => {
+      <span class="kw">let</span> data = <span class="str">""</span>;
+      res.<span class="fn">on</span>(<span class="str">"data"</span>, d => data += d);
+      res.<span class="fn">on</span>(<span class="str">"end"</span>, () => {
+        <span class="kw">try</span> {
+          <span class="kw">const</span> json = <span class="obj">JSON</span>.<span class="fn">parse</span>(data);
+          <span class="kw">const</span> results = {
+            abstract: json.AbstractText || <span class="str">"No abstract available"</span>,
+            source: json.AbstractSource || <span class="str">""</span>,
+            topics: (json.RelatedTopics || []).<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">5</span>).<span class="fn">map</span>(t => t.Text || <span class="str">""</span>).<span class="fn">filter</span>(<span class="obj">Boolean</span>),
+            answer: json.Answer || <span class="str">""</span>,
+          };
+          <span class="fn">resolve</span>(results);
+        } <span class="kw">catch</span> {
+          <span class="fn">resolve</span>({ error: <span class="str">"Search failed"</span>, query });
+        }
+      });
+    }).<span class="fn">on</span>(<span class="str">"error"</span>, () => <span class="fn">resolve</span>({ error: <span class="str">"Network error"</span>, query }));
+  });
+}
+
+<span class="cmt">// Tool 2: Save notes to a file</span>
+<span class="kw">function</span> <span class="fn">save_note</span>({ filename, content }) {
+  <span class="kw">const</span> filepath = <span class="str">`./research_notes/${filename}`</span>;
+  <span class="kw">if</span> (!fs.<span class="fn">existsSync</span>(<span class="str">"./research_notes"</span>)) {
+    fs.<span class="fn">mkdirSync</span>(<span class="str">"./research_notes"</span>);
+  }
+  fs.<span class="fn">writeFileSync</span>(filepath, content, <span class="str">"utf-8"</span>);
+  <span class="kw">return</span> { success: <span class="kw">true</span>, filepath, size: content.length };
+}
+
+<span class="cmt">// Tool 3: Read saved notes</span>
+<span class="kw">function</span> <span class="fn">read_note</span>({ filename }) {
+  <span class="kw">const</span> filepath = <span class="str">`./research_notes/${filename}`</span>;
+  <span class="kw">if</span> (!fs.<span class="fn">existsSync</span>(filepath)) <span class="kw">return</span> { error: <span class="str">`File ${filename} not found`</span> };
+  <span class="kw">return</span> { content: fs.<span class="fn">readFileSync</span>(filepath, <span class="str">"utf-8"</span>) };
+}
+
+<span class="cmt">// Tool 4: List saved notes</span>
+<span class="kw">function</span> <span class="fn">list_notes</span>() {
+  <span class="kw">if</span> (!fs.<span class="fn">existsSync</span>(<span class="str">"./research_notes"</span>)) <span class="kw">return</span> { files: [] };
+  <span class="kw">return</span> { files: fs.<span class="fn">readdirSync</span>(<span class="str">"./research_notes"</span>) };
+}
+
+<span class="cmt">// Tool 5: Get current datetime</span>
+<span class="kw">function</span> <span class="fn">get_datetime</span>() {
+  <span class="kw">return</span> { datetime: <span class="kw">new</span> <span class="obj">Date</span>().<span class="fn">toISOString</span>(), timestamp: <span class="obj">Date</span>.<span class="fn">now</span>() };
+}
+
+<span class="kw">const</span> toolMap = { web_search, save_note, read_note, list_notes, get_datetime };
+
+<span class="kw">const</span> toolDeclarations = [{
+  functionDeclarations: [
+    {
+      name: <span class="str">"web_search"</span>,
+      description: <span class="str">"Search the web for information on any topic"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: { query: { type: <span class="str">"STRING"</span>, description: <span class="str">"Search query"</span> } },
+        required: [<span class="str">"query"</span>],
+      },
+    },
+    {
+      name: <span class="str">"save_note"</span>,
+      description: <span class="str">"Save research notes to a file for later reference"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          filename: { type: <span class="str">"STRING"</span>, description: <span class="str">"Filename like research.md"</span> },
+          content: { type: <span class="str">"STRING"</span>, description: <span class="str">"Content to save"</span> },
+        },
+        required: [<span class="str">"filename"</span>, <span class="str">"content"</span>],
+      },
+    },
+    {
+      name: <span class="str">"read_note"</span>,
+      description: <span class="str">"Read a previously saved note file"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          filename: { type: <span class="str">"STRING"</span>, description: <span class="str">"Filename to read"</span> },
+        },
+        required: [<span class="str">"filename"</span>],
+      },
+    },
+    {
+      name: <span class="str">"list_notes"</span>,
+      description: <span class="str">"List all saved research note files"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: {} },
+    },
+    {
+      name: <span class="str">"get_datetime"</span>,
+      description: <span class="str">"Get the current date and time"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: {} },
+    },
+  ],
+}];
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// The Research Agent — Full implementation
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">class</span> <span class="obj">ResearchAgent</span> {
+  <span class="fn">constructor</span>() {
+    this.model = genAI.<span class="fn">getGenerativeModel</span>({
+      model: <span class="str">"gemini-1.5-flash"</span>,
+      tools: toolDeclarations,
+      systemInstruction: <span class="str">`
+        You are a research assistant. Your job is to:
+        1. Search for information on topics the user asks about
+        2. Synthesize the information clearly
+        3. Save important findings to notes when asked
+        4. Be factual, cite sources when available
+        5. Always search BEFORE answering questions about current events or facts
+        
+        When saving notes, use descriptive filenames like "ai-trends-2024.md"
+      `</span>,
+    });
+    this.chat = this.model.<span class="fn">startChat</span>();
+    this.stepCount = <span class="num">0</span>;
+  }
+
+  <span class="kw">async</span> <span class="fn">run</span>(message) {
+    console.<span class="fn">log</span>(<span class="str">`\n${"=".repeat(60)}`</span>);
+    console.<span class="fn">log</span>(<span class="str">`👤 User: ${message}`</span>);
+    console.<span class="fn">log</span>(<span class="str">`${"=".repeat(60)}`</span>);
+
+    <span class="kw">let</span> response = <span class="kw">await</span> this.chat.<span class="fn">sendMessage</span>(message);
+    this.stepCount = <span class="num">0</span>;
+
+    <span class="kw">while</span> (this.stepCount < <span class="num">10</span>) { <span class="cmt">// Safety limit</span>
+      this.stepCount++;
+      <span class="kw">const</span> parts = response.response.candidates[<span class="num">0</span>].content.parts;
+      <span class="kw">const</span> calls = parts.<span class="fn">filter</span>(p => p.functionCall);
+
+      <span class="kw">if</span> (!calls.length) {
+        <span class="kw">const</span> text = parts.<span class="fn">map</span>(p => p.text || <span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>);
+        console.<span class="fn">log</span>(<span class="str">`\n🤖 Research Agent:\n${text}`</span>);
+        <span class="kw">return</span> text;
+      }
+
+      <span class="kw">const</span> results = [];
+      <span class="kw">for</span> (<span class="kw">const</span> p <span class="kw">of</span> calls) {
+        <span class="kw">const</span> { name, args } = p.functionCall;
+        console.<span class="fn">log</span>(<span class="str">`\n  🔍 Step ${this.stepCount}: ${name}(${JSON.stringify(args)})`</span>);
+
+        <span class="kw">const</span> fn = toolMap[name];
+        <span class="kw">const</span> result = <span class="kw">await</span> <span class="obj">Promise</span>.<span class="fn">resolve</span>(<span class="fn">fn</span>(args));
+        console.<span class="fn">log</span>(<span class="str">`  ✅ Done`</span>);
+
+        results.<span class="fn">push</span>({ functionResponse: { name, response: result } });
+      }
+
+      response = <span class="kw">await</span> this.chat.<span class="fn">sendMessage</span>(results);
+    }
+  }
+}
+
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">const</span> agent = <span class="kw">new</span> <span class="obj">ResearchAgent</span>();
+
+  <span class="kw">await</span> agent.<span class="fn">run</span>(<span class="str">"Search for information about Node.js and save a summary note called 'nodejs-research.md'"</span>);
+  <span class="kw">await</span> agent.<span class="fn">run</span>(<span class="str">"What notes have I saved so far?"</span>);
+  <span class="kw">await</span> agent.<span class="fn">run</span>(<span class="str">"Read my nodejs-research.md file"</span>);
+}
+<span class="fn">main</span>();</code></pre>
+  </section>
+
+  <!-- ========== SECTION 7: MULTI-AGENT ========== -->
+  <section id="multi-agent">
+    <h2><span class="icon">🌐</span> Multi-Agent Systems</h2>
+
+    <p>A <strong>multi-agent system</strong> is when you have multiple specialized agents working together — each does what it's best at, and they coordinate to solve complex problems.</p>
+
+    <div class="analogy">
+      <strong>Real-Life Analogy:</strong> Think of a hospital. A patient comes in. The <strong>receptionist agent</strong> registers them. The <strong>triage agent</strong> assesses urgency. The <strong>diagnosis agent</strong> (doctor) determines the condition. The <strong>pharmacy agent</strong> prescribes medication. Each is specialized. A <strong>coordinator agent</strong> (head nurse) routes work between them. No single agent does everything — they <em>collaborate</em>.
+    </div>
+
+    <h3>Multi-Agent Patterns</h3>
+    <table>
+      <thead><tr><th>Pattern</th><th>How It Works</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Orchestrator/Worker</strong></td><td>One boss agent delegates tasks to worker agents</td><td>Complex research, content pipelines</td></tr>
+        <tr><td><strong>Pipeline</strong></td><td>Agents in sequence — output of one is input to next</td><td>Data processing, document transformation</td></tr>
+        <tr><td><strong>Debate</strong></td><td>Two agents argue/review each other's work</td><td>Code review, fact checking, writing quality</td></tr>
+        <tr><td><strong>Parallel</strong></td><td>Multiple agents work simultaneously, results merged</td><td>Research from multiple sources</td></tr>
+        <tr><td><strong>Supervisor</strong></td><td>One agent monitors and corrects others</td><td>Quality assurance, safety checking</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Real Example: Content Creation Pipeline</h3>
+    <p>3 agents working in sequence: <strong>Researcher</strong> → <strong>Writer</strong> → <strong>Editor</strong></p>
+
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">06_multi_agent_pipeline.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Helper: Simple LLM call (no tools needed for some agents)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">llmCall</span>(systemPrompt, userMessage) {
+  <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+    model: <span class="str">"gemini-1.5-flash"</span>,
+    systemInstruction: systemPrompt,
+  });
+  <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(userMessage);
+  <span class="kw">return</span> result.response.text();
+}
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AGENT 1: Researcher — Gathers key points on a topic
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">researcherAgent</span>(topic) {
+  console.<span class="fn">log</span>(<span class="str">`\n📚 AGENT 1 (Researcher): Researching "${topic}"...`</span>);
+
+  <span class="kw">const</span> researchNotes = <span class="kw">await</span> <span class="fn">llmCall</span>(
+    <span class="str">`You are a research specialist. Given a topic, produce:
+     1. Key facts (5-7 bullet points)
+     2. Recent trends
+     3. Important statistics
+     4. Common misconceptions
+     Be factual and specific. Format as structured notes.`</span>,
+    <span class="str">`Research topic: ${topic}`</span>
+  );
+
+  console.<span class="fn">log</span>(<span class="str">`✅ Researcher done. Notes: ${researchNotes.length} chars`</span>);
+  <span class="kw">return</span> researchNotes;
+}
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AGENT 2: Writer — Turns research into an article
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">writerAgent</span>(topic, researchNotes, style) {
+  console.<span class="fn">log</span>(<span class="str">`\n✍️  AGENT 2 (Writer): Writing ${style} article...`</span>);
+
+  <span class="kw">const</span> article = <span class="kw">await</span> <span class="fn">llmCall</span>(
+    <span class="str">`You are a professional content writer. Given research notes, write a compelling article.
+     Writing style: ${style}
+     Requirements:
+     - Engaging headline
+     - Strong opening paragraph
+     - 3-4 body sections with headers
+     - Clear conclusion
+     - Natural, flowing prose
+     Do NOT use bullet points in the final article.`</span>,
+    <span class="str">`Topic: ${topic}\n\nResearch Notes:\n${researchNotes}`</span>
+  );
+
+  console.<span class="fn">log</span>(<span class="str">`✅ Writer done. Article: ${article.length} chars`</span>);
+  <span class="kw">return</span> article;
+}
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AGENT 3: Editor — Reviews and improves the article
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">editorAgent</span>(article) {
+  console.<span class="fn">log</span>(<span class="str">`\n🔍 AGENT 3 (Editor): Reviewing and improving...`</span>);
+
+  <span class="kw">const</span> edited = <span class="kw">await</span> <span class="fn">llmCall</span>(
+    <span class="str">`You are a senior editor. Review the article and:
+     1. Fix any grammatical errors
+     2. Improve clarity and flow
+     3. Strengthen the opening and closing
+     4. Ensure consistent tone
+     5. Add a compelling meta description (1-2 sentences) at the top
+     Return the improved article only. No editorial commentary.`</span>,
+    <span class="str">`Review and improve this article:\n\n${article}`</span>
+  );
+
+  console.<span class="fn">log</span>(<span class="str">`✅ Editor done.`</span>);
+  <span class="kw">return</span> edited;
+}
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ORCHESTRATOR: Coordinates the pipeline
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">async function</span> <span class="fn">contentPipeline</span>({ topic, style = <span class="str">"informative blog post"</span> }) {
+  console.<span class="fn">log</span>(<span class="str">`\n🚀 Starting Content Pipeline`</span>);
+  console.<span class="fn">log</span>(<span class="str">`📌 Topic: ${topic}`</span>);
+  console.<span class="fn">log</span>(<span class="str">`🎨 Style: ${style}`</span>);
+
+  <span class="kw">const</span> startTime = <span class="obj">Date</span>.<span class="fn">now</span>();
+
+  <span class="cmt">// STEP 1: Research</span>
+  <span class="kw">const</span> research = <span class="kw">await</span> <span class="fn">researcherAgent</span>(topic);
+
+  <span class="cmt">// STEP 2: Write (uses research from step 1)</span>
+  <span class="kw">const</span> draft = <span class="kw">await</span> <span class="fn">writerAgent</span>(topic, research, style);
+
+  <span class="cmt">// STEP 3: Edit (uses draft from step 2)</span>
+  <span class="kw">const</span> finalArticle = <span class="kw">await</span> <span class="fn">editorAgent</span>(draft);
+
+  <span class="kw">const</span> elapsed = ((<span class="obj">Date</span>.<span class="fn">now</span>() - startTime) / <span class="num">1000</span>).<span class="fn">toFixed</span>(<span class="num">1</span>);
+  console.<span class="fn">log</span>(<span class="str">`\n⏱️  Pipeline completed in ${elapsed}s`</span>);
+  console.<span class="fn">log</span>(<span class="str">`\n${"═".repeat(60)}`</span>);
+  console.<span class="fn">log</span>(<span class="str">`📰 FINAL ARTICLE:`</span>);
+  console.<span class="fn">log</span>(<span class="str">`${"═".repeat(60)}\n`</span>);
+  console.<span class="fn">log</span>(finalArticle);
+
+  <span class="kw">return</span> { research, draft, finalArticle };
+}
+
+<span class="fn">contentPipeline</span>({
+  topic: <span class="str">"The impact of AI agents on software development in 2024"</span>,
+  style: <span class="str">"engaging tech blog post for developers"</span>,
+});</code></pre>
+
+    <h3>Advanced: Orchestrator Agent with Dynamic Worker Routing</h3>
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">07_orchestrator_pattern.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WORKER AGENTS (specialized mini-agents)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> workers = {
+  <span class="fn">code_agent</span>: <span class="kw">async</span> (task) => {
+    <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+      model: <span class="str">"gemini-1.5-flash"</span>,
+      systemInstruction: <span class="str">"You are an expert programmer. Write clean, working code with comments. Always include example usage."</span>,
+    });
+    <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
+    <span class="kw">return</span> result.response.text();
+  },
+
+  <span class="fn">analysis_agent</span>: <span class="kw">async</span> (task) => {
+    <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+      model: <span class="str">"gemini-1.5-flash"</span>,
+      systemInstruction: <span class="str">"You are a data analyst. Analyze information, find patterns, and provide clear insights with numbers."</span>,
+    });
+    <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
+    <span class="kw">return</span> result.response.text();
+  },
+
+  <span class="fn">writing_agent</span>: <span class="kw">async</span> (task) => {
+    <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+      model: <span class="str">"gemini-1.5-flash"</span>,
+      systemInstruction: <span class="str">"You are a professional writer. Write clear, engaging, well-structured content."</span>,
+    });
+    <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
+    <span class="kw">return</span> result.response.text();
+  },
+
+  <span class="fn">math_agent</span>: <span class="kw">async</span> (task) => {
+    <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+      model: <span class="str">"gemini-1.5-flash"</span>,
+      systemInstruction: <span class="str">"You are a mathematician. Solve problems step by step, showing all work clearly."</span>,
+    });
+    <span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(task);
+    <span class="kw">return</span> result.response.text();
+  },
+};
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ORCHESTRATOR: Analyzes task, delegates to right worker(s)
+// Can run workers in parallel for speed!
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">class</span> <span class="obj">Orchestrator</span> {
+  <span class="fn">constructor</span>() {
+    <span class="cmt">// Orchestrator has ONE special tool: call_worker</span>
+    this.model = genAI.<span class="fn">getGenerativeModel</span>({
+      model: <span class="str">"gemini-1.5-flash"</span>,
+      tools: [{
+        functionDeclarations: [{
+          name: <span class="str">"call_worker"</span>,
+          description: <span class="str">"Delegate a subtask to a specialized worker agent"</span>,
+          parameters: {
+            type: <span class="str">"OBJECT"</span>,
+            properties: {
+              worker: {
+                type: <span class="str">"STRING"</span>,
+                enum: [<span class="str">"code_agent"</span>, <span class="str">"analysis_agent"</span>, <span class="str">"writing_agent"</span>, <span class="str">"math_agent"</span>],
+                description: <span class="str">"Which specialized agent to use"</span>,
+              },
+              task: {
+                type: <span class="str">"STRING"</span>,
+                description: <span class="str">"The specific task for this worker"</span>,
+              },
+              priority: {
+                type: <span class="str">"STRING"</span>,
+                enum: [<span class="str">"parallel"</span>, <span class="str">"sequential"</span>],
+                description: <span class="str">"Run in parallel with other calls or wait for result first"</span>,
+              },
+            },
+            required: [<span class="str">"worker"</span>, <span class="str">"task"</span>],
+          },
+        }],
+      }],
+      systemInstruction: <span class="str">`
+        You are an orchestrator AI. Break complex user requests into subtasks
+        and delegate each to the right specialist agent using call_worker.
+        
+        Available workers:
+        - code_agent: Writing code, debugging, programming tasks
+        - analysis_agent: Data analysis, research synthesis, pattern finding
+        - writing_agent: Articles, emails, documentation, creative writing  
+        - math_agent: Calculations, formulas, statistics
+        
+        For independent subtasks, call multiple workers (they can run in parallel).
+        Combine all results into a comprehensive final answer.
+      `</span>,
+    });
+  }
+
+  <span class="kw">async</span> <span class="fn">run</span>(userRequest) {
+    console.<span class="fn">log</span>(<span class="str">`\n${"═".repeat(60)}`</span>);
+    console.<span class="fn">log</span>(<span class="str">`🎯 Orchestrator received: "${userRequest}"`</span>);
+    console.<span class="fn">log</span>(<span class="str">`${"═".repeat(60)}`</span>);
+
+    <span class="kw">const</span> chat = this.model.<span class="fn">startChat</span>();
+    <span class="kw">let</span> response = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(userRequest);
+    <span class="kw">const</span> workerResults = {};
+
+    <span class="kw">while</span> (<span class="kw">true</span>) {
+      <span class="kw">const</span> parts = response.response.candidates[<span class="num">0</span>].content.parts;
+      <span class="kw">const</span> calls = parts.<span class="fn">filter</span>(p => p.functionCall);
+
+      <span class="kw">if</span> (!calls.length) {
+        <span class="kw">const</span> finalAnswer = parts.<span class="fn">map</span>(p => p.text || <span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>);
+        console.<span class="fn">log</span>(<span class="str">`\n🏆 FINAL ANSWER:\n${finalAnswer}`</span>);
+        <span class="kw">return</span> finalAnswer;
+      }
+
+      <span class="cmt">// Run all worker calls in parallel!</span>
+      console.<span class="fn">log</span>(<span class="str">`\n📋 Dispatching ${calls.length} worker(s) in parallel...`</span>);
+      <span class="kw">const</span> workerPromises = calls.<span class="fn">map</span>(<span class="kw">async</span> (p) => {
+        <span class="kw">const</span> { worker, task } = p.functionCall.args;
+        console.<span class="fn">log</span>(<span class="str">`  🤖 → ${worker}: "${task.substring(0, 60)}..."`</span>);
+        <span class="kw">const</span> result = <span class="kw">await</span> workers[worker](task);
+        console.<span class="fn">log</span>(<span class="str">`  ✅ ${worker} completed`</span>);
+        <span class="kw">return</span> { name: <span class="str">"call_worker"</span>, result: { worker, result } };
+      });
+
+      <span class="kw">const</span> results = <span class="kw">await</span> <span class="obj">Promise</span>.<span class="fn">all</span>(workerPromises);
+      <span class="kw">const</span> toolResults = results.<span class="fn">map</span>(r => ({
+        functionResponse: { name: r.name, response: r.result },
+      }));
+
+      response = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(toolResults);
+    }
+  }
+}
+
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">const</span> orchestrator = <span class="kw">new</span> <span class="obj">Orchestrator</span>();
+
+  <span class="cmt">// Complex request requiring multiple agents</span>
+  <span class="kw">await</span> orchestrator.<span class="fn">run</span>(<span class="str">`
+    I want to build a Node.js REST API for a todo app. Please:
+    1. Analyze what endpoints I'll need and why
+    2. Write the actual Express.js code for the API
+    3. Write developer documentation for the API
+    4. Calculate how many requests per second a single Node.js instance can handle
+  `</span>);
+}
+<span class="fn">main</span>();</code></pre>
+  </section>
+
+  <!-- ========== SECTION 8: REAL WORLD PROJECTS ========== -->
+  <section id="real-world">
+    <h2><span class="icon">🏗️</span> Real-World Projects</h2>
+
+    <h3>Project 1: Personal Email Assistant Agent</h3>
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">08_email_agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// Simulated email inbox (in real app, use nodemailer + IMAP)</span>
+<span class="kw">const</span> inbox = [
+  {
+    id: <span class="num">1</span>, from: <span class="str">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9d908c8cbf9c90928f9e9186d19c9092">[email&#160;protected]</a>"</span>, subject: <span class="str">"Q4 Report Review"</span>,
+    body: <span class="str">"Please review and send feedback on the Q4 report by Friday."</span>,
+    date: <span class="str">"2024-02-26"</span>, read: <span class="kw">false</span>, priority: <span class="str">"high"</span>
+  },
+  {
+    id: <span class="num">2</span>, from: <span class="str">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="acc2c9dbdfc0c9d8d8c9deecd8c9cfc4cec0c3cb82cfc3c1">[email&#160;protected]</a>"</span>, subject: <span class="str">"Weekly Tech Digest"</span>,
+    body: <span class="str">"This week in tech: AI advances, new frameworks, and more..."</span>,
+    date: <span class="str">"2024-02-25"</span>, read: <span class="kw">false</span>, priority: <span class="str">"low"</span>
+  },
+  {
+    id: <span class="num">3</span>, from: <span class="str">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7c4cbcec2c9d3e7d4d3c6d5d3d2d789c4c8ca">[email&#160;protected]</a>"</span>, subject: <span class="str">"Project Update Needed"</span>,
+    body: <span class="str">"Hi, we need an update on the project status. What's the current progress?"</span>,
+    date: <span class="str">"2024-02-25"</span>, read: <span class="kw">false</span>, priority: <span class="str">"high"</span>
+  },
+];
+
+<span class="kw">const</span> sentEmails = [];
+
+<span class="kw">const</span> emailTools = {
+  <span class="fn">list_emails</span>: ({ filter }) => {
+    <span class="kw">let</span> emails = inbox;
+    <span class="kw">if</span> (filter === <span class="str">"unread"</span>) emails = inbox.<span class="fn">filter</span>(e => !e.read);
+    <span class="kw">if</span> (filter === <span class="str">"high_priority"</span>) emails = inbox.<span class="fn">filter</span>(e => e.priority === <span class="str">"high"</span>);
+    <span class="kw">return</span> emails.<span class="fn">map</span>(({ body, ...e }) => e); <span class="cmt">// Don't include full body in list</span>
+  },
+  <span class="fn">read_email</span>: ({ id }) => {
+    <span class="kw">const</span> email = inbox.<span class="fn">find</span>(e => e.id === id);
+    <span class="kw">if</span> (!email) <span class="kw">return</span> { error: <span class="str">`Email ${id} not found`</span> };
+    email.read = <span class="kw">true</span>;
+    <span class="kw">return</span> email;
+  },
+  <span class="fn">compose_reply</span>: ({ email_id, context }) => {
+    <span class="kw">const</span> email = inbox.<span class="fn">find</span>(e => e.id === email_id);
+    <span class="kw">if</span> (!email) <span class="kw">return</span> { error: <span class="str">"Email not found"</span> };
+    <span class="kw">return</span> {
+      to: email.from,
+      subject: <span class="str">`Re: ${email.subject}`</span>,
+      original_email: email.body,
+      suggestion_context: context,
+    };
+  },
+  <span class="fn">send_email</span>: ({ to, subject, body }) => {
+    <span class="kw">const</span> sent = { id: sentEmails.length + <span class="num">1</span>, to, subject, body, sentAt: <span class="kw">new</span> <span class="obj">Date</span>().<span class="fn">toISOString</span>() };
+    sentEmails.<span class="fn">push</span>(sent);
+    <span class="kw">return</span> { success: <span class="kw">true</span>, message: <span class="str">`Email sent to ${to}`, emailId: sent.id };
+  },
+  <span class="fn">mark_as_read</span>: ({ id }) => {
+    <span class="kw">const</span> email = inbox.<span class="fn">find</span>(e => e.id === id);
+    <span class="kw">if</span> (email) email.read = <span class="kw">true</span>;
+    <span class="kw">return</span> { success: <span class="kw">true</span> };
+  },
+  <span class="fn">summarize_thread</span>: ({ ids }) => {
+    <span class="kw">const</span> emails = inbox.<span class="fn">filter</span>(e => ids.includes(e.id));
+    <span class="kw">return</span> emails;<span class="cmt">// Agent will summarize these</span>
+  },
+};
+
+<span class="kw">const</span> emailToolDeclarations = [{
+  functionDeclarations: [
+    { name: <span class="str">"list_emails"</span>, description: <span class="str">"List emails in inbox, with optional filter"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: {
+        filter: { type: <span class="str">"STRING"</span>, enum: [<span class="str">"all"</span>, <span class="str">"unread"</span>, <span class="str">"high_priority"</span>] }
+      }}},
+    { name: <span class="str">"read_email"</span>, description: <span class="str">"Read the full content of an email"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: { id: { type: <span class="str">"NUMBER"</span> } }, required: [<span class="str">"id"</span>] }},
+    { name: <span class="str">"send_email"</span>, description: <span class="str">"Send an email"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: {
+        to: { type: <span class="str">"STRING"</span> }, subject: { type: <span class="str">"STRING"</span> }, body: { type: <span class="str">"STRING"</span> }
+      }, required: [<span class="str">"to"</span>, <span class="str">"subject"</span>, <span class="str">"body"</span>] }},
+    { name: <span class="str">"compose_reply"</span>, description: <span class="str">"Get context needed to compose a reply to an email"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: {
+        email_id: { type: <span class="str">"NUMBER"</span> },
+        context: { type: <span class="str">"STRING"</span>, description: <span class="str">"What the reply should say"</span> }
+      }, required: [<span class="str">"email_id"</span>, <span class="str">"context"</span>] }},
+  ],
+}];
+
+<span class="kw">async function</span> <span class="fn">emailAgent</span>(command) {
+  <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+    model: <span class="str">"gemini-1.5-flash"</span>,
+    tools: emailToolDeclarations,
+    systemInstruction: <span class="str">`
+      You are a professional email assistant. You can:
+      - Read and manage emails
+      - Draft and send replies
+      - Summarize email threads
+      - Prioritize important emails
+      
+      When replying to clients or bosses, be professional and concise.
+      When sending emails, draft thoughtful responses.
+      Always confirm before sending important emails.
+    `</span>,
+  });
+
+  <span class="kw">const</span> chat = model.<span class="fn">startChat</span>();
+  console.<span class="fn">log</span>(<span class="str">`\n📧 Command: ${command}`</span>);
+
+  <span class="kw">let</span> resp = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(command);
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> parts = resp.response.candidates[<span class="num">0</span>].content.parts;
+    <span class="kw">const</span> calls = parts.<span class="fn">filter</span>(p => p.functionCall);
+    <span class="kw">if</span> (!calls.length) { console.<span class="fn">log</span>(<span class="str">`🤖: ${parts.<span class="fn">map</span>(p=>p.text||<span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>)}`</span>); <span class="kw">return</span>; }
+    <span class="kw">const</span> results = calls.<span class="fn">map</span>(p => {
+      <span class="kw">const</span> {name,args} = p.functionCall;
+      console.<span class="fn">log</span>(<span class="str">`  📬 ${name}(${JSON.stringify(args)})`</span>);
+      <span class="kw">return</span> { functionResponse: { name, response: emailTools[name](args) }};
+    });
+    resp = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(results);
+  }
+}
+
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">await</span> <span class="fn">emailAgent</span>(<span class="str">"Show me my high priority emails and summarize what I need to do"</span>);
+  <span class="kw">await</span> <span class="fn">emailAgent</span>(<span class="str">"Reply to the client email saying we're 70% complete and on track for next week"</span>);
+}
+<span class="fn">main</span>();</code></pre>
+
+    <h3>Project 2: SQL Database Agent</h3>
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">09_sql_agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="cmt">// npm install @google/generative-ai better-sqlite3</span>
+<span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> <span class="obj">Database</span> = <span class="fn">require</span>(<span class="str">"better-sqlite3"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">// Set up a real SQLite database</span>
+<span class="kw">const</span> db = <span class="kw">new</span> <span class="obj">Database</span>(<span class="str">":memory:"</span>);
+
+<span class="cmt">// Create tables and seed data</span>
+db.<span class="fn">exec</span>(<span class="str">`
+  CREATE TABLE employees (
+    id INTEGER PRIMARY KEY,
+    name TEXT, department TEXT, salary INTEGER, hire_date TEXT
+  );
+  CREATE TABLE sales (
+    id INTEGER PRIMARY KEY, employee_id INTEGER,
+    amount REAL, product TEXT, sale_date TEXT,
+    FOREIGN KEY (employee_id) REFERENCES employees(id)
+  );
+  INSERT INTO employees VALUES
+    (1,'Ali Hassan','Engineering',95000,'2021-03-15'),
+    (2,'Sara Khan','Marketing',75000,'2022-01-10'),
+    (3,'Ahmed Raza','Engineering',88000,'2020-06-20'),
+    (4,'Fatima Ali','Sales',65000,'2023-02-01'),
+    (5,'Usman Malik','Engineering',102000,'2019-11-05');
+  INSERT INTO sales VALUES
+    (1,4,15000,'Enterprise Plan','2024-01-15'),
+    (2,2,8500,'Pro Plan','2024-01-20'),
+    (3,4,22000,'Enterprise Plan','2024-02-01'),
+    (4,2,4200,'Starter Plan','2024-02-10'),
+    (5,4,18000,'Enterprise Plan','2024-02-20');
+`</span>);
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SQL Tools
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">const</span> sqlTools = {
+  <span class="fn">get_schema</span>: () => {
+    <span class="kw">const</span> tables = db.<span class="fn">prepare</span>(<span class="str">"SELECT name, sql FROM sqlite_master WHERE type='table'"</span>).<span class="fn">all</span>();
+    <span class="kw">return</span> tables;
+  },
+  <span class="fn">run_query</span>: ({ sql }) => {
+    <span class="kw">try</span> {
+      <span class="cmt">// Safety: only allow SELECT queries</span>
+      <span class="kw">if</span> (!sql.<span class="fn">trim</span>().<span class="fn">toUpperCase</span>().<span class="fn">startsWith</span>(<span class="str">"SELECT"</span>)) {
+        <span class="kw">return</span> { error: <span class="str">"Only SELECT queries are allowed"</span> };
+      }
+      <span class="kw">const</span> results = db.<span class="fn">prepare</span>(sql).<span class="fn">all</span>();
+      <span class="kw">return</span> { rows: results, count: results.length };
+    } <span class="kw">catch</span> (e) {
+      <span class="kw">return</span> { error: e.message };
+    }
+  },
+};
+
+<span class="kw">const</span> sqlToolDeclarations = [{
+  functionDeclarations: [
+    {
+      name: <span class="str">"get_schema"</span>,
+      description: <span class="str">"Get the database schema (table names and column definitions)"</span>,
+      parameters: { type: <span class="str">"OBJECT"</span>, properties: {} },
+    },
+    {
+      name: <span class="str">"run_query"</span>,
+      description: <span class="str">"Execute a SELECT SQL query on the database"</span>,
+      parameters: {
+        type: <span class="str">"OBJECT"</span>,
+        properties: {
+          sql: { type: <span class="str">"STRING"</span>, description: <span class="str">"The SQL SELECT query to execute"</span> },
+        },
+        required: [<span class="str">"sql"</span>],
+      },
+    },
+  ],
+}];
+
+<span class="kw">async function</span> <span class="fn">sqlAgent</span>(question) {
+  <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+    model: <span class="str">"gemini-1.5-flash"</span>,
+    tools: sqlToolDeclarations,
+    systemInstruction: <span class="str">`
+      You are a SQL expert. When users ask business questions:
+      1. First, check the schema to understand the database structure
+      2. Write the appropriate SQL query
+      3. Run the query and interpret the results
+      4. Explain findings in plain English with numbers
+      Always show the SQL query you used.
+    `</span>,
+  });
+
+  <span class="kw">const</span> chat = model.<span class="fn">startChat</span>();
+  console.<span class="fn">log</span>(<span class="str">`\n❓ Question: ${question}`</span>);
+
+  <span class="kw">let</span> resp = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(question);
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> parts = resp.response.candidates[<span class="num">0</span>].content.parts;
+    <span class="kw">const</span> calls = parts.<span class="fn">filter</span>(p => p.functionCall);
+    <span class="kw">if</span> (!calls.length) {
+      console.<span class="fn">log</span>(<span class="str">`\n📊 Answer:\n${parts.<span class="fn">map</span>(p=>p.text||<span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>)}`</span>);
+      <span class="kw">return</span>;
+    }
+    <span class="kw">const</span> results = calls.<span class="fn">map</span>(p => {
+      <span class="kw">const</span> {name,args} = p.functionCall;
+      console.<span class="fn">log</span>(<span class="str">`  🗃️  ${name}(${JSON.stringify(args)})`</span>);
+      <span class="kw">return</span> { functionResponse: { name, response: sqlTools[name](args) }};
+    });
+    resp = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(results);
+  }
+}
+
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="kw">await</span> <span class="fn">sqlAgent</span>(<span class="str">"Who are the top earners in Engineering?"</span>);
+  <span class="kw">await</span> <span class="fn">sqlAgent</span>(<span class="str">"What's the total sales amount per employee? Who's the best salesperson?"</span>);
+  <span class="kw">await</span> <span class="fn">sqlAgent</span>(<span class="str">"What's the average salary by department?"</span>);
+}
+<span class="fn">main</span>();</code></pre>
+  </section>
+
+  <!-- ========== SECTION 9: PATTERNS ========== -->
+  <section id="patterns">
+    <h2><span class="icon">📐</span> Patterns & Project Structure</h2>
+
+    <h3>Complete Project Structure</h3>
+    <div class="filetree">
+<span class="dir">ai-agents-project/</span>
+├── <span class="dir">agents/</span>
+│   ├── <span class="file">base-agent.js</span>         <span class="comment"># Reusable agent loop class</span>
+│   ├── <span class="file">research-agent.js</span>     <span class="comment"># Research specialist</span>
+│   ├── <span class="file">customer-agent.js</span>     <span class="comment"># Customer support</span>
+│   └── <span class="file">orchestrator.js</span>       <span class="comment"># Coordinates other agents</span>
+├── <span class="dir">skills/</span>
+│   ├── <span class="file">email-skill.js</span>        <span class="comment"># Email tools + instructions</span>
+│   ├── <span class="file">database-skill.js</span>     <span class="comment"># SQL tools + instructions</span>
+│   └── <span class="file">file-skill.js</span>         <span class="comment"># File system tools</span>
+├── <span class="dir">mcp-servers/</span>
+│   ├── <span class="file">todo-server.js</span>        <span class="comment"># MCP server for todos</span>
+│   ├── <span class="file">calendar-server.js</span>    <span class="comment"># MCP server for calendar</span>
+│   └── <span class="file">search-server.js</span>      <span class="comment"># MCP server for web search</span>
+├── <span class="dir">tools/</span>
+│   ├── <span class="file">web-search.js</span>
+│   ├── <span class="file">file-ops.js</span>
+│   └── <span class="file">calculator.js</span>
+├── <span class="file">index.js</span>                  <span class="comment"># Main entry point</span>
+└── <span class="file">package.json</span></div>
+
+    <h3>Reusable Base Agent Class</h3>
+    <div class="code-header" style="background:var(--code-bg); border:1px solid var(--border); border-bottom:none; border-radius:10px 10px 0 0; padding:10px 16px;">
+      <span class="code-lang">JavaScript</span>
+      <span class="code-title">agents/base-agent.js</span>
+    </div>
+    <pre style="margin-top:0; border-radius:0 0 10px 10px; border-top:none;"><code><span class="kw">const</span> { <span class="obj">GoogleGenerativeAI</span> } = <span class="fn">require</span>(<span class="str">"@google/generative-ai"</span>);
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="obj">GoogleGenerativeAI</span>(process.env.<span class="obj">GEMINI_API_KEY</span>);
+
+<span class="cmt">/**
+ * BaseAgent - Reusable agent class you can extend
+ * Usage:
+ *   class MyAgent extends BaseAgent {
+ *     constructor() {
+ *       super({ name: 'MyAgent', systemPrompt: '...', tools: [...], toolFns: {...} });
+ *     }
+ *   }
+ */</span>
+<span class="kw">class</span> <span class="obj">BaseAgent</span> {
+  <span class="fn">constructor</span>({ name, systemPrompt, tools, toolFns, model = <span class="str">"gemini-1.5-flash"</span>, maxSteps = <span class="num">20</span> }) {
+    this.name = name;
+    this.toolFns = toolFns;
+    this.maxSteps = maxSteps;
+    this.conversationHistory = [];
+
+    this.model = genAI.<span class="fn">getGenerativeModel</span>({
+      model,
+      systemInstruction: systemPrompt,
+      tools: tools ? [{ functionDeclarations: tools }] : undefined,
+    });
+
+    this.chat = this.model.<span class="fn">startChat</span>({ history: this.conversationHistory });
+    this.verbose = <span class="kw">true</span>;
+  }
+
+  <span class="fn">log</span>(msg) {
+    <span class="kw">if</span> (this.verbose) console.<span class="fn">log</span>(<span class="str">`[${this.name}] ${msg}`</span>);
+  }
+
+  <span class="kw">async</span> <span class="fn">run</span>(userMessage, context = {}) {
+    this.<span class="fn">log</span>(<span class="str">`👤 "${userMessage}"`</span>);
+
+    <span class="cmt">// Inject any extra context into the message</span>
+    <span class="kw">const</span> fullMessage = context ? <span class="str">`${userMessage}\n\nContext: ${JSON.stringify(context)}`</span> : userMessage;
+
+    <span class="kw">let</span> response = <span class="kw">await</span> this.chat.<span class="fn">sendMessage</span>(fullMessage);
+    <span class="kw">let</span> steps = <span class="num">0</span>;
+
+    <span class="kw">while</span> (steps++ < this.maxSteps) {
+      <span class="kw">const</span> parts = response.response.candidates[<span class="num">0</span>].content.parts;
+      <span class="kw">const</span> calls = parts.<span class="fn">filter</span>(p => p.functionCall);
+
+      <span class="kw">if</span> (!calls.length) {
+        <span class="kw">const</span> text = parts.<span class="fn">map</span>(p => p.text || <span class="str">""</span>).<span class="fn">join</span>(<span class="str">""</span>);
+        this.<span class="fn">log</span>(<span class="str">`🤖 Done in ${steps} steps`</span>);
+        <span class="kw">return</span> { success: <span class="kw">true</span>, response: text, steps };
+      }
+
+      <span class="kw">const</span> toolResults = [];
+      <span class="kw">for</span> (<span class="kw">const</span> p <span class="kw">of</span> calls) {
+        <span class="kw">const</span> { name, args } = p.functionCall;
+        this.<span class="fn">log</span>(<span class="str">`🔧 ${name}(${JSON.stringify(args)})`</span>);
+
+        <span class="kw">try</span> {
+          <span class="kw">const</span> fn = this.toolFns[name];
+          <span class="kw">if</span> (!fn) <span class="kw">throw</span> <span class="kw">new</span> <span class="obj">Error</span>(<span class="str">`Unknown tool: ${name}`</span>);
+          <span class="kw">const</span> result = <span class="kw">await</span> <span class="obj">Promise</span>.<span class="fn">resolve</span>(<span class="fn">fn</span>(args));
+          toolResults.<span class="fn">push</span>({ functionResponse: { name, response: result } });
+        } <span class="kw">catch</span> (err) {
+          this.<span class="fn">log</span>(<span class="str">`❌ Error: ${err.message}`</span>);
+          toolResults.<span class="fn">push</span>({ functionResponse: { name, response: { error: err.message } } });
+        }
+      }
+
+      response = <span class="kw">await</span> this.chat.<span class="fn">sendMessage</span>(toolResults);
+    }
+
+    <span class="kw">return</span> { success: <span class="kw">false</span>, error: <span class="str">"Max steps reached"</span> };
+  }
+
+  <span class="cmt">// Reset conversation history</span>
+  <span class="fn">reset</span>() {
+    this.chat = this.model.<span class="fn">startChat</span>();
+  }
+}
+
+module.exports = { <span class="obj">BaseAgent</span> };
+
+<span class="cmt">// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Example: Create a specialized agent using BaseAgent
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="kw">class</span> <span class="obj">WeatherAgent</span> <span class="kw">extends</span> <span class="obj">BaseAgent</span> {
+  <span class="fn">constructor</span>() {
+    <span class="kw">super</span>({
+      name: <span class="str">"WeatherAgent"</span>,
+      systemPrompt: <span class="str">"You are a weather assistant. Always check weather before answering."</span>,
+      tools: [
+        {
+          name: <span class="str">"get_weather"</span>,
+          description: <span class="str">"Get current weather for a city"</span>,
+          parameters: {
+            type: <span class="str">"OBJECT"</span>,
+            properties: {
+              city: { type: <span class="str">"STRING"</span>, description: <span class="str">"City name"</span> },
+            },
+            required: [<span class="str">"city"</span>],
+          },
+        },
+      ],
+      toolFns: {
+        <span class="fn">get_weather</span>: ({ city }) => ({
+          city,
+          temp: <span class="num">28</span>,
+          condition: <span class="str">"Sunny"</span>,
+          humidity: <span class="str">"65%"</span>,
+          wind: <span class="str">"15 km/h"</span>,
+        }),
+      },
+    });
+  }
+}
+
+<span class="cmt">// Use it:</span>
+<span class="kw">const</span> weather = <span class="kw">new</span> <span class="obj">WeatherAgent</span>();
+weather.<span class="fn">run</span>(<span class="str">"What's the weather like in Lahore? Should I bring an umbrella?"</span>)
+  .<span class="fn">then</span>(result => console.<span class="fn">log</span>(result.response));</code></pre>
+
+    <h3>Setup Instructions</h3>
+    <div class="concept green">
+      <div class="concept-title">Quick Start</div>
+      <p style="margin:0; font-family: monospace; font-size: 14px;">
+        mkdir my-agent && cd my-agent<br>
+        npm init -y<br>
+        npm install @google/generative-ai @modelcontextprotocol/sdk better-sqlite3<br>
+        export GEMINI_API_KEY=your_key_here<br>
+        node 01_calculator_agent.js
+      </p>
+    </div>
+  </section>
+
+  <!-- Summary -->
+  <section>
+    <h2><span class="icon">🎯</span> Summary — The Big Picture</h2>
+
+    <table>
+      <thead><tr><th>Concept</th><th>What It Is</th><th>Analogy</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Agent</strong></td>
+          <td>AI that thinks + acts using tools</td>
+          <td>Personal assistant</td>
+          <td>Any task requiring action, not just answers</td>
+        </tr>
+        <tr>
+          <td><strong>Tool</strong></td>
+          <td>A JS function the agent can call</td>
+          <td>A skill or equipment</td>
+          <td>Every time agent needs to do something real</td>
+        </tr>
+        <tr>
+          <td><strong>Skill</strong></td>
+          <td>Group of related tools + instructions</td>
+          <td>Job training + tools</td>
+          <td>Organizing agent capabilities by domain</td>
+        </tr>
+        <tr>
+          <td><strong>MCP</strong></td>
+          <td>Standard protocol for AI tool servers</td>
+          <td>USB for AI</td>
+          <td>Sharing tools across multiple AI clients</td>
+        </tr>
+        <tr>
+          <td><strong>Multi-Agent</strong></td>
+          <td>Multiple specialized agents collaborating</td>
+          <td>A team of experts</td>
+          <td>Complex tasks, parallel work, quality checks</td>
+        </tr>
+        <tr>
+          <td><strong>Orchestrator</strong></td>
+          <td>Agent that manages other agents</td>
+          <td>Project manager</td>
+          <td>Coordinating complex workflows</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Update toggle button text/icon now that DOM is ready
+  applyTheme(getPreferredTheme());
+
+  // ===== SIDEBAR TOGGLE =====
+  // Function moved to head for early availability
+
+  // Close sidebar on mobile when a link is clicked
+  document.querySelectorAll('.sidebar a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 900) {
+        document.body.classList.remove('sidebar-open');
+      }
+    });
+  });
+
+  // Highlight active nav item on scroll (ScrollSpy)
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.sidebar a');
+
+  function scrollSpy() {
+    let currentSectionId = "";
+    const scrollPosition = window.scrollY + 100;
+
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSectionId = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + currentSectionId) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', scrollSpy);
+  window.addEventListener('load', scrollSpy);
+</script>
